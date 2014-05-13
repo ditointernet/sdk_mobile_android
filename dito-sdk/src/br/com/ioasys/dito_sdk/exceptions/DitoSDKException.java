@@ -1,7 +1,7 @@
 package br.com.ioasys.dito_sdk.exceptions;
 
 /**
- * Exceção personalizada que deverá ser tratada em todos os métodos do SDK
+ * Exce√ß√£o personalizada que dever√° ser tratada em todos os m√©todos do SDK
  * 
  * @author iOasys
  * @since 14-04-14

@@ -2,6 +2,7 @@ package br.com.ioasys.dito_sdk_sample;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Hashtable;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,14 +18,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 import br.com.ioasys.dito_sdk.api.Services;
+import br.com.ioasys.dito_sdk.constants.Constants.NETWORKS;
+import br.com.ioasys.dito_sdk.constants.Constants.NETWORKS_ACRONYMS;
 import br.com.ioasys.dito_sdk.exceptions.DitoSDKException;
+import br.com.ioasys.dito_sdk.interfaces.GCMListener;
 import br.com.ioasys.dito_sdk.interfaces.HttpConnectionListener;
+import br.com.ioasys.dito_sdk.models.DitoSDKParameters;
 import br.com.ioasys.dito_sdk_sample.constants.Constants;
 import br.com.ioasys.dito_sdk_sample.utils.AppLogUtil;
 import br.com.ioasys.dito_sdk_sample.utils.Utils;
@@ -39,7 +43,7 @@ import com.google.android.gms.plus.PlusClient;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.SimpleFacebook.OnLoginListener;
 
-public class DitoSDKSample extends ActionBarActivity implements OnClickListener, ConnectionCallbacks, OnConnectionFailedListener {
+public class DitoSDKSample extends ActionBarActivity implements OnClickListener, ConnectionCallbacks, OnConnectionFailedListener, GCMListener {
     private PlusClient plusClient;
     private RelativeLayout gPlus;
     private RelativeLayout facebook;
@@ -47,16 +51,79 @@ public class DitoSDKSample extends ActionBarActivity implements OnClickListener,
     private ProgressDialog gPlusProgress;
     private ConnectionResult connectionResult;
     private SimpleFacebook simpleFacebook;
-    
-    byte[] signature = Services.getSignature(Constants.SECRET_KEY, Constants.PUB_K_STRING);
-    String sign = Base64.encodeToString(signature, Base64.DEFAULT);
+    private DitoSDKParameters params;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dito_sdksample);       
-        
+        setContentView(R.layout.dito_sdksample);
+
+        // Setando parâmetros
+        settingParameters();
+
+        // implementação do GCM
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... paramArrayOfParams) {
+                Services.registerOnGCM(DitoSDKSample.this, DitoSDKSample.this);
+                return null;
+            }
+        }.execute();
+
+        // login na rede portal
+        signInPortal();
+
         initViews();
+    }
+
+    private void settingParameters() {
+        params = new DitoSDKParameters();
+
+        params.setApiKey(Constants.PLATFORM_API_KEY);
+        params.setDomain(Constants.DOMAIN);
+        params.setReference(Constants.REFERENCE);
+        params.setSenderID(Constants.SENDER_ID);
+        params.setSign(Services.getSignature(Constants.SECRET_KEY, Constants.PUB_K_STRING));
+        params.setInDevMode(Constants.DEV_MODE);
+
+        // Enviando os parâmetros ao SDK
+        Services.setDitoSDKParameters(params);
+    }
+
+    private void signInPortal() {
+        Hashtable<String, String> userData = new Hashtable<String, String>();
+
+        userData.put("name", "Rodrigo");
+        userData.put("email", "rodrigo.fontoura@dito.com.br");
+
+        try {
+            Services.signup(NETWORKS.PORTAL, NETWORKS_ACRONYMS.PORTAL, Constants.SOCIAL_ID, userData.toString(), new HttpConnectionListener() {
+                @Override
+                public void onSuccess(String response) {
+                    AppLogUtil.i("PORTAL_SIGNUP_RESPONSE", response);
+                }
+
+                @Override
+                public void onError(String error) {
+                    AppLogUtil.e("PORTAL_SIGNUP_ERROR", error);
+                }
+            });
+
+            // Cadastro de Token
+            Services.registerToken(Constants.REG_ID, new HttpConnectionListener() {
+                @Override
+                public void onSuccess(String response) {
+                    AppLogUtil.i("REGISTER_TOKEN_SUCCESS", response);
+                }
+
+                @Override
+                public void onError(String error) {
+                    AppLogUtil.e("REGISTER_TOKEN_ERROR", error);
+                }
+            });
+        } catch (DitoSDKException e) {
+            AppLogUtil.e("SDK_EXCEPTION", e.getMessage(), e);
+        }
     }
 
     private void initViews() {
@@ -159,8 +226,7 @@ public class DitoSDKSample extends ActionBarActivity implements OnClickListener,
                 Log.i("GOOGLE_PLUS_RETRIEVE_ACCESS_TOKEN", "Access token retrieved:" + token);
 
                 try {
-                    Services.signup(Constants.NETWORK_URL_PARAM, Constants.NETWORK, Constants.PLATFORM_API_KEY, Constants.SOCIAL_ID, token, Constants.DOMAIN, sign,
-                    		new HttpConnectionListener() {
+                    Services.signup(NETWORKS.GOOGLE_PLUS, NETWORKS_ACRONYMS.GOOGLE_PLUS, Constants.SOCIAL_ID, token, new HttpConnectionListener() {
                         @Override
                         public void onSuccess(String response) {
                             Log.i("GOOGLE_PLUS_SIGNUP_RESPONSE", "SIGNUP Success: " + response);
@@ -172,10 +238,9 @@ public class DitoSDKSample extends ActionBarActivity implements OnClickListener,
                         }
                     });
                 } catch (DitoSDKException ex) {
-                    Log.e("ERROR", ex.getMessage(), ex);
+                    AppLogUtil.e("ERROR", ex.getMessage(), ex);
                 }
             }
-
         };
 
         task.execute();
@@ -221,7 +286,7 @@ public class DitoSDKSample extends ActionBarActivity implements OnClickListener,
             }
         });
     }
- 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         simpleFacebook.onActivityResult(this, requestCode, resultCode, data);
@@ -262,12 +327,11 @@ public class DitoSDKSample extends ActionBarActivity implements OnClickListener,
     }
 
     private void continueFacebookCallMethodsAPI() {
-        final ProgressDialog progress = Utils.showProgressCustom(this, null, null, false, "Efetuando requisi��es");
+        final ProgressDialog progress = Utils.showProgressCustom(this, null, null, false, "Efetuando requisições");
         progress.show();
 
         try {
-            Services.signup("facebook", "fb", Constants.PLATFORM_API_KEY, Constants.SOCIAL_ID, simpleFacebook.getAccessToken(), Constants.DOMAIN, sign,
-            		new HttpConnectionListener() {
+            Services.signup(NETWORKS.FACEBOOK, NETWORKS_ACRONYMS.FACEBOOK, Constants.SOCIAL_ID, simpleFacebook.getAccessToken(), new HttpConnectionListener() {
                 @Override
                 public void onSuccess(String response) {
                     AppLogUtil.i("FACEBOOK_SIGNUP_RESPONSE", response);
@@ -282,7 +346,7 @@ public class DitoSDKSample extends ActionBarActivity implements OnClickListener,
             JSONObject uploadData = new JSONObject();
             uploadData.put("birthday", "02-02-1992");
 
-            Services.putData(Constants.PLATFORM_API_KEY, Constants.DOMAIN, Constants.REFERENCE, uploadData, sign, new HttpConnectionListener() {
+            Services.putData(uploadData, new HttpConnectionListener() {
                 @Override
                 public void onSuccess(String response) {
                     AppLogUtil.i("FACEBOOK_DATA_RESPONSE", response);
@@ -294,7 +358,7 @@ public class DitoSDKSample extends ActionBarActivity implements OnClickListener,
                 }
             });
 
-            Services.getDataForUserReference(Constants.PLATFORM_API_KEY, Constants.DOMAIN, Constants.REFERENCE, sign, new HttpConnectionListener() {
+            Services.getDataForUserReference(new HttpConnectionListener() {
                 @Override
                 public void onSuccess(String response) {
                     AppLogUtil.i("FACEBOOK_DATA_FOR_USER_REFERENCE_RESPONSE", response);
@@ -313,7 +377,7 @@ public class DitoSDKSample extends ActionBarActivity implements OnClickListener,
             String json = "[" + obj1.toString() + "," + obj2.toString() + "]";
             friends = new JSONArray(json);
 
-            Services.friendsWhoDidEvents(Constants.PLATFORM_API_KEY, Constants.DOMAIN, Constants.REFERENCE, sign, friends, new HttpConnectionListener() {
+            Services.friendsWhoDidEvents(friends, new HttpConnectionListener() {
                 @Override
                 public void onSuccess(String response) {
                     AppLogUtil.i("FACEBOOK_FRIENDS_WHO_DID_EVENTS_RESPONSE", response);
@@ -325,7 +389,7 @@ public class DitoSDKSample extends ActionBarActivity implements OnClickListener,
                 }
             });
 
-            Services.eventsFeedForUserReference(Constants.PLATFORM_API_KEY, Constants.DOMAIN, Constants.REFERENCE, sign, new HttpConnectionListener() {
+            Services.eventsFeedForUserReference(null, new HttpConnectionListener() {
                 @Override
                 public void onSuccess(String response) {
                     AppLogUtil.i("FACEBOOK_EVENTS_FEED_FOR_USER_REFERENCE_RESPONSE", response);
@@ -337,23 +401,9 @@ public class DitoSDKSample extends ActionBarActivity implements OnClickListener,
                 }
             });
 
-            String event = "{\n" +
-                    "\"action\": \"watch\",\n" +
-                    "\"target\": {\n" +
-                    "\"type\": \"movie\",\n" +
-                    "\"id\": \"59\",\n" +
-                    "\"title\": \"Wolverine: Imortal\",\n" +
-                    "\"description\": \"When Wolverine is summoned to Japan by an old acquaintance, he is embroiled in a conflict that forces him to confront his own demons.\",\n" +
-                    "\"image\": \"http://ia.media-imdb.com/images/M/MV5BNzg1MDQxMTQ2OF5BMl5BanBnXkFtZTcwMTk3MjAzOQ@@._V1_SX214_.jpg\"\n" +
-                    "},\n" +
-                    "\"revenue\": \"5.99\",\n" +
-                    "\"data\": {\n" +
-                    "\"year\": \"2013\",\n" +
-                    "\"rating\": \"PG-13\"\n" +
-                    "} \n" +
-                    "}";
+            String event = "{\n" + "\"action\": \"watch\",\n" + "\"target\": {\n" + "\"type\": \"movie\",\n" + "\"id\": \"59\",\n" + "\"title\": \"Wolverine: Imortal\",\n" + "\"description\": \"When Wolverine is summoned to Japan by an old acquaintance, he is embroiled in a conflict that forces him to confront his own demons.\",\n" + "\"image\": \"http://ia.media-imdb.com/images/M/MV5BNzg1MDQxMTQ2OF5BMl5BanBnXkFtZTcwMTk3MjAzOQ@@._V1_SX214_.jpg\"\n" + "},\n" + "\"revenue\": \"5.99\",\n" + "\"data\": {\n" + "\"year\": \"2013\",\n" + "\"rating\": \"PG-13\"\n" + "} \n" + "}";
 
-            Services.createEventWithData(Constants.PLATFORM_API_KEY, Constants.DOMAIN, Constants.REFERENCE, event, sign, new HttpConnectionListener() {
+            Services.createEventWithData(event, new HttpConnectionListener() {
                 @Override
                 public void onSuccess(String response) {
                     AppLogUtil.i("FACEBOOK_CREATE_EVENT_WITH_DATA_RESPONSE", response);
@@ -380,7 +430,7 @@ public class DitoSDKSample extends ActionBarActivity implements OnClickListener,
     }
 
     private void signInTwitter() {
-        new AsyncTask<Void, Void, RequestToken>(){
+        new AsyncTask<Void, Void, RequestToken>() {
             @Override
             protected RequestToken doInBackground(Void... voids) {
                 try {
@@ -407,11 +457,11 @@ public class DitoSDKSample extends ActionBarActivity implements OnClickListener,
 
                 Log.i("TWITTER_AUTH", "Access Token: " + token);
 
-                final ProgressDialog progress = Utils.showProgressCustom(DitoSDKSample.this, null, null, false, "Efetuando requisi��es");
+                final ProgressDialog progress = Utils.showProgressCustom(DitoSDKSample.this, null, null, false, "Efetuando requisições");
                 progress.show();
 
                 try {
-                    Services.signup("twitter", "tw", Constants.PLATFORM_API_KEY, Constants.SOCIAL_ID, token, Constants.DOMAIN, sign, new HttpConnectionListener() {
+                    Services.signup(NETWORKS.TWITTER, NETWORKS_ACRONYMS.TWITTER, Constants.SOCIAL_ID, token, new HttpConnectionListener() {
                         @Override
                         public void onSuccess(String response) {
                             progress.dismiss();
@@ -429,5 +479,15 @@ public class DitoSDKSample extends ActionBarActivity implements OnClickListener,
                 }
             }
         }.execute();
+    }
+
+    @Override
+    public void OnFailure(String error) {
+        AppLogUtil.e("ERROR_ON_REGISTER_IN_GCM", error);
+    }
+
+    @Override
+    public void OnSuccess(String data) {
+        AppLogUtil.i("REGISTRATION_ID_GCM_RECEIVED", data);
     }
 }

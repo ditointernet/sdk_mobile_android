@@ -4,6 +4,7 @@ public final class Constants {
     private Constants() {
     }
 
+    public static final boolean DEV_MODE = true;
     public static final boolean LOG_ENABLED = true;
 
     public static final class GPlus {
@@ -32,6 +33,8 @@ public final class Constants {
     public static final String NETWORK_URL_PARAM = "facebook";
     public static final String DOMAIN = "http://facebook.local:3000";
     public static final String REFERENCE = "04401552611944820586";
+    public static final String REG_ID = "APA91bGssnjdbn-MnrRotRKqialaWZT2z8fPrQVx-eknoJ0ZxhjKovPVyruH5xEL6I-uGPtqBCmUfwzQHXtAhe_GcrQNBxgDcX8PL7mh9Us-1nik2nhO-WqVtztWfLiRuovi-pSn6NQGoAfma_H1740ls2elmBO53rIJeqK1iHJqfuJ6C0hZaQo";
+    public static final String SENDER_ID = "237081764765";
 
     public static final byte[] SECRET_KEY = "F6qxlwRDWSGvM3gZryDMdUJpfjIYZiGXdoy5lDm4".getBytes();
     public static final String PUB_K_STRING = "MIGJAoGBALt2P6Ra1KTzVqxEaS29WvQtaiBOecuL8P/MOd1Ik8EBMteRJSZX86nEymGrUXySAjyvtRpj6nR0yOIyZyQo3ZWCcdmIsPQ/xfaDogxS31gPPQnQBdprrnSeg99DGQ3PP3ut2eqRyKqWFtt6Cc3x7UfLXuwvdjgEHE+v6+XboDI7AgMBAAE=";

@@ -20,7 +20,7 @@ public class DitoSDKSampleSingleton extends Application {
         instance = this;
 
         if (instance == null) {
-            throw new RuntimeException("Configure a aplicação no AndroidManifest.xml");
+            throw new RuntimeException("Configure a aplica√ß√£oo no AndroidManifest.xml");
         }
 
         setupFacebookSettings();

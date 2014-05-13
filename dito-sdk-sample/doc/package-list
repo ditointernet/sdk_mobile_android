@@ -1,5 +1,8 @@
 br.com.ioasys.dito_sdk
 br.com.ioasys.dito_sdk.api
+br.com.ioasys.dito_sdk.api.utils.gcm
 br.com.ioasys.dito_sdk.constants
 br.com.ioasys.dito_sdk.exceptions
 br.com.ioasys.dito_sdk.interfaces
+br.com.ioasys.dito_sdk.models
+br.com.ioasys.dito_sdk_sample.utils.gcm

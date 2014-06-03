@@ -359,14 +359,17 @@ public class Services {
             jsonParams.put(Constants.SIGNATURE, parameters.getSign());
             jsonParams.put(Constants.ENCODING, Constants.ENCODING_TYPE);
             jsonParams.put(Constants.NETWORK_NAME, networkAcronym.getValue());
-            jsonParams.put(Constants.ACCESS_TOKEN, accessToken);
+
+            if (networkAcronym != NETWORKS_ACRONYMS.PORTAL) {
+                jsonParams.put(Constants.ACCESS_TOKEN, accessToken);
+            } else {
+                jsonParams.put(Constants.USER_DATA, accessToken);
+            }
 
             stringEntity = new StringEntity(jsonParams.toString());
             stringEntity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, Constants.CONTENT_TYPE));
 
             String url = Constants.getServicesURLBase(parameters.isInDevMode()) + network.getValue() + "/" + socialID + "/signup";
-
-            client.addHeader("ORIGIN", parameters.getDomain());
 
             client.post(null, url, stringEntity, Constants.CONTENT_TYPE, new AsyncHttpResponseHandler() {
                 @Override
@@ -498,7 +501,7 @@ public class Services {
     /**
      * 
      * @param message
-     *            Conteúdo da notifica��o
+     *            Conteúdo da notificação
      *
      * @param listener
      *            Referência da interface <b>HttpConnectionListener</b> que será usada

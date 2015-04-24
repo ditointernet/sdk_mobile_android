@@ -49,11 +49,6 @@ public class DitoSDK {
         }
         Constants.context = context;
         Constants.configure = new Configure(apiKey, secret);
-        try {
-            TrackService.verifyToSendEventOffline();
-        } catch (DitoSDKException e) {
-            Log.e("DITO_SDK", e.getMessage());
-        }
     }
 
     /**
@@ -68,6 +63,12 @@ public class DitoSDK {
         Constants.credentials = credentials;
         Constants.accessToken = accessToken;
         IdentifyService.identify(accessToken, data, completion);
+
+        try {
+            TrackService.verifyToSendEventOffline();
+        } catch (DitoSDKException e) {
+            Log.e("DITO_SDK", e.getMessage());
+        }
     }
 
     /**

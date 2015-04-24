@@ -26,7 +26,7 @@ public class TrackService extends BaseService {
     }
 
     public static void verifyToSendEventOffline() throws DitoSDKException {
-        if (verifyTrackerOffline()) {
+        if (NetworkUtil.isOnline() && verifyTrackerOffline() && Constants.credentials != null) {
             for (int i = 0; i < Constants.getListTrackToOffline().size(); i++) {
                 sendTracker(Constants.getListTrackToOffline().get(i), null);
             }
@@ -35,7 +35,7 @@ public class TrackService extends BaseService {
     }
 
     private static void sendTracker(Object data, DitoSDKCallback callback) throws DitoSDKException {
-        if (verifyConfigure(callback)) {
+        if (verifyConfigure(callback) && Constants.credentials != null) {
             Gson gson = new Gson();
             JsonObject json = new JsonObject();
             json.addProperty(Constants.Headers.PLATFORM_API_KEY, Constants.configure.getApiKey());

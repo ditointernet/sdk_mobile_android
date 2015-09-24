@@ -35,7 +35,10 @@ public class ReadNotification extends BaseService {
                     json.addProperty(Constants.Headers.CHANNEL_TYPE, Constants.Headers.CHANNEL_TYPE_VALUE);
                     json.addProperty(Constants.Headers.TYPE, Constants.getParamNetworks());
                     json.addProperty(Constants.Headers.ID, Constants.getSocialId());
-//                    Log.e("DITO_SDK_READ_NOTIFICATION" , json.toString());
+                    if (jsonObject.has("notification") && !TextUtils.isEmpty(jsonObject.get("notification").getAsString())){
+                      String notificationLogId = jsonObject.get("notification_log_id").getAsString();
+                      json.addProperty(Constants.Headers.NOTIFICATION_LOG_ID, notificationLogId);
+                    }
                     NetworkUtil.requestPostMethod(Constants.getUrlReadNotification(identifier), json.toString(), callback);
                 }else{
                     Log.e("DITO_SDK", Constants.Mensagens.JSON_FORA_FORMATO);

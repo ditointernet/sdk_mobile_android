@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">DitoSDKSample</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="options">
+        <item>Identify</item>
+        <item>Register Device</item>
+        <item>UnRegister Device</item>
+        <item>Notification Read</item>
+        <item>Alias</item>
+        <item>UnAlias</item>
+        <item>Track</item>
+        <item>Request</item>
+    </string-array>
+</resources>

@@ -191,7 +191,7 @@ public class Constants {
 
     public static void saveTrackToOffline(Object data) {
         if (listTrackOffline == null) {
-            listTrackOffline = new ArrayList<>();
+            listTrackOffline = getListTrackToOffline();
         }
 
         listTrackOffline.add(data);
@@ -206,6 +206,8 @@ public class Constants {
             Type listType = new TypeToken<List<Object>>() {
             }.getType();
             listTrackOffline = new Gson().fromJson(json, listType);
+        }else{
+            listTrackOffline = new ArrayList<>();
         }
 
         return listTrackOffline;

@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">DitoSDK</string>
-    <string name="msg_error_configure_not_found">{"message":"Para continuar é necessário fornecer \"SUA_API_KEY\" e/ou \"SUA_SECRET\""}</string>
-    <string name="msg_error_reference">{"message" : "Não é possível utilizar o atributo \"reference\" para esta requisição."}</string>
-    <string name="msg_error_metodo_assincrono">{"message" : "Não é possível utilizar este método. Favor implementar em um ambiente assíncrono"}</string>
-</resources>

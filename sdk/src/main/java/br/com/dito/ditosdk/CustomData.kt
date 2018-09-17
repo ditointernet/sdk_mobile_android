@@ -14,7 +14,7 @@ class CustomData {
         params[key] = value
     }
 
-    fun add(@NonNull key: String, @NonNull value: Float) {
+    fun add(@NonNull key: String, @NonNull value: Double) {
         params[key] = value
     }
 

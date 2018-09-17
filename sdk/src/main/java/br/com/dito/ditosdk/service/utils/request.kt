@@ -1,5 +1,6 @@
 package br.com.dito.ditosdk.service.utils
 
+import br.com.dito.ditosdk.Event
 import br.com.dito.ditosdk.Identify
 import com.google.gson.annotations.SerializedName
 
@@ -13,5 +14,44 @@ internal data class SigunpRequest(
         @SerializedName("user_data")
         val userData: Identify,
 
+        @SerializedName("encoding")
+        val encoding: String = "base64"
+)
+
+
+internal data class EventRequest(
+        @SerializedName("platform_api_key")
+        val platformApiKey: String,
+
+        @SerializedName("sha1_signature")
+        val sha1Signature: String,
+
+        @SerializedName("event")
+        val event: Event,
+
+        @SerializedName("id_type")
+        val idType: String = "id",
+
+        @SerializedName("network_name")
+        val networkName: String = "pt",
+
+        @SerializedName("encoding")
+        val encoding: String = "base64"
+)
+
+internal data class AddTokenRequest(
+        @SerializedName("platform_api_key")
+        val platformApiKey: String,
+
+        @SerializedName("sha1_signature")
+        val sha1Signature: String,
+
+        @SerializedName("token")
+        val token: String,
+
+        @SerializedName("platform")
+        val platform: String = "Android",
+
+        @SerializedName("encoding")
         val encoding: String = "base64"
 )

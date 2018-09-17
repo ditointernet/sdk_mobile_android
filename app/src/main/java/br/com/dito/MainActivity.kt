@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import br.com.dito.ditosdk.CustomData
 import br.com.dito.ditosdk.Dito
+import br.com.dito.ditosdk.Event
 import br.com.dito.ditosdk.Identify
 
 class MainActivity : AppCompatActivity() {
@@ -17,6 +18,9 @@ class MainActivity : AppCompatActivity() {
         data.add("push", false)
         val identify = Identify("85496430259")
         identify.data = data
+
         Dito.identify(identify)
+
+        Dito.tracker(Event("comprou", 2.5))
     }
 }

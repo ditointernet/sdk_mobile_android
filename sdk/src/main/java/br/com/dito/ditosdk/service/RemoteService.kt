@@ -2,9 +2,9 @@ package br.com.dito.ditosdk.service
 
 import br.com.dito.ditosdk.BuildConfig
 import br.com.dito.ditosdk.CustomData
+import br.com.dito.ditosdk.Event
 import br.com.dito.ditosdk.Identify
-import br.com.dito.ditosdk.service.utils.customDataSerializer
-import br.com.dito.ditosdk.service.utils.identifySerializer
+import br.com.dito.ditosdk.service.utils.*
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonSerializer
@@ -38,6 +38,8 @@ internal object RemoteService {
         gsonBuilder = GsonBuilder()
                 .registerTypeAdapter(CustomData::class.java, customDataSerializer())
                 .registerTypeAdapter(Identify::class.java, identifySerializer())
+                .registerTypeAdapter(Event::class.java, eventSerializer())
+                .registerTypeAdapter(EventRequest::class.java, eventRequestSerializer())
     }
 
     private fun createRetrofit() {
@@ -59,5 +61,14 @@ internal object RemoteService {
         }
 
         return retrofit.create(LoginApi::class.java)
+    }
+
+    fun eventApi(): EventApi {
+        if (baseUrl.isNullOrEmpty() || !baseUrl.contains("events")) {
+            baseUrl = "https://events.plataformasocial.com.br"
+            createRetrofit()
+        }
+
+        return retrofit.create(EventApi::class.java)
     }
 }

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull
 import android.support.annotation.Nullable
 import br.com.dito.ditosdk.service.RemoteService
 import br.com.dito.ditosdk.tracking.Tracker
+import org.jetbrains.annotations.NotNull
 
 object Dito  {
 
@@ -13,11 +14,14 @@ object Dito  {
     private lateinit var apiSecret: String
     private lateinit var tracker: Tracker
 
-    private  var dryRun: Boolean = false
-
     var options: Options? = null
 
 
+    /**
+     *
+     * @param context
+     * @param options
+     */
     fun init(@NonNull context: Context, @Nullable options: Options?) {
         val appInfo = context.packageManager.getApplicationInfo(context.packageName, PackageManager.GET_META_DATA)
         appInfo.metaData?.let {
@@ -39,24 +43,20 @@ object Dito  {
         tracker.identify(identify, RemoteService.loginApi())
     }
 
-    fun track(action: String, revenue: String?, data: CustomData?) {
+    fun tracker(@NotNull event: Event) {
+        tracker.event(event, RemoteService.eventApi())
+    }
+
+    fun registerDevice(@NotNull token: String) {
 
     }
 
-    fun registerDevice(token: String) {
+    fun unregisterDevice(@NotNull token: String) {
 
     }
 
-    fun unregisterDevice(token: String) {
+    fun notificationRead(@NotNull notification: String) {
 
-    }
-
-    fun notificationRead(notification: String) {
-
-    }
-
-    fun setDryRun(value: Boolean) {
-        this.dryRun = value
     }
 
 }

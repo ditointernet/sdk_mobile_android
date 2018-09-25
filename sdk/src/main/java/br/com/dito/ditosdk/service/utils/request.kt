@@ -39,7 +39,7 @@ internal data class EventRequest(
         val encoding: String = "base64"
 )
 
-internal data class AddTokenRequest(
+internal data class TokenRequest(
         @SerializedName("platform_api_key")
         val platformApiKey: String,
 
@@ -52,6 +52,9 @@ internal data class AddTokenRequest(
         @SerializedName("platform")
         val platform: String = "Android",
 
-        @SerializedName("encoding")
-        val encoding: String = "base64"
+        @SerializedName("id_type")
+        val idType: String = "id"
+
+//        @SerializedName("encoding")
+//        val encoding: String = "base64"
 )

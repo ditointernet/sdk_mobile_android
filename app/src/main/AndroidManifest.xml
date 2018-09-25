@@ -21,6 +21,12 @@
         <meta-data android:name="br.com.dito.API_KEY" android:value="MjAxNS0wMy0zMSAxMToxOToyNCAtMDMwME1vYmlsZSBTREtzMTI4"/>
 
         <meta-data android:name="br.com.dito.API_SECRET" android:value="vutpDmAIUdMfVQgcGiGanCun4opBVRUJoqIIzyGi"/>
+
+        <service android:name=".ditosdk.DitoMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

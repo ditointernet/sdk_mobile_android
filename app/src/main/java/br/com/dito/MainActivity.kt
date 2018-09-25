@@ -6,6 +6,7 @@ import br.com.dito.ditosdk.CustomData
 import br.com.dito.ditosdk.Dito
 import br.com.dito.ditosdk.Event
 import br.com.dito.ditosdk.Identify
+import com.google.firebase.iid.FirebaseInstanceId
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,5 +23,10 @@ class MainActivity : AppCompatActivity() {
         Dito.identify(identify)
 
         Dito.tracker(Event("comprou", 2.5))
+
+
+        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {
+            Dito.registerDevice(it.result.token)
+        }
     }
 }

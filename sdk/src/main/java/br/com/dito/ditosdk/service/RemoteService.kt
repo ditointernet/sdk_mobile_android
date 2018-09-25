@@ -71,4 +71,13 @@ internal object RemoteService {
 
         return retrofit.create(EventApi::class.java)
     }
+
+    fun notificationApi(): NotificationApi {
+        if (baseUrl.isNullOrEmpty() || !baseUrl.contains("events")) {
+            baseUrl = "https://events.plataformasocial.com.br"
+            createRetrofit()
+        }
+
+        return retrofit.create(NotificationApi::class.java)
+    }
 }

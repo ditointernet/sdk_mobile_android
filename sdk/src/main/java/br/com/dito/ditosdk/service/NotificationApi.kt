@@ -1,8 +1,6 @@
 package br.com.dito.ditosdk.service
 
-import br.com.dito.ditosdk.service.utils.AddTokenRequest
-import br.com.dito.ditosdk.service.utils.EventRequest
-import br.com.dito.ditosdk.service.utils.SigunpRequest
+import br.com.dito.ditosdk.service.utils.TokenRequest
 import com.google.gson.JsonObject
 import kotlinx.coroutines.experimental.Deferred
 import retrofit2.Response
@@ -12,6 +10,11 @@ import retrofit2.http.Path
 
 internal interface NotificationApi {
     @POST("/users/{id}/mobile-tokens/")
-    fun track(@Path("id") id: String, @Body data: AddTokenRequest)
+    fun add(@Path("id") id: String, @Body data: TokenRequest)
+            : Deferred<Response<JsonObject>>
+
+
+    @POST("/users/{id}/mobile-tokens/disable")
+    fun delete(@Path("id") id: String, @Body data: TokenRequest)
             : Deferred<Response<JsonObject>>
 }

@@ -52,6 +52,9 @@ dependencies {
 
     implementation "com.android.support:appcompat-v7:$rootProject.ext.supportLibVersion"
 
+    //Firebase
+    implementation "com.google.firebase:firebase-messaging:$rootProject.ext.firebaseMessagingVersion"
+
     testImplementation "junit:junit:$rootProject.ext.junitVersion"
     testImplementation 'org.mockito:mockito-core:2.22.0'
     testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-RC2'

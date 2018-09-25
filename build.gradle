@@ -33,6 +33,7 @@ ext {
     compileSdkVersion = targetSdkVersion
     supportLibVersion = '28.0.0-rc02'
     junitVersion = "4.12"
+    firebaseMessagingVersion = "17.3.2"
 
     // ValidateTor Library Info
     libVersionCode = 1

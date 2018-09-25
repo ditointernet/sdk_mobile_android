@@ -1,6 +1,7 @@
 package br.com.dito.ditosdk
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.support.annotation.NonNull
 import android.support.annotation.Nullable
@@ -25,8 +26,8 @@ object Dito  {
     fun init(@NonNull context: Context, @Nullable options: Options?) {
         val appInfo = context.packageManager.getApplicationInfo(context.packageName, PackageManager.GET_META_DATA)
         appInfo.metaData?.let {
-            apiKey = it.getString("br.com.dito.API_KEY")
-            apiSecret = it.getString("br.com.dito.API_SECRET")
+            apiKey = it.getString("br.com.dito.API_KEY", "")
+            apiSecret = it.getString("br.com.dito.API_SECRET", "")
 
             if (apiKey.isNullOrEmpty() || apiSecret.isNullOrEmpty()) {
                 throw RuntimeException("É preciso configurar API_KEY e API_SECRET no AndroidManifest.")
@@ -48,11 +49,11 @@ object Dito  {
     }
 
     fun registerDevice(@NotNull token: String) {
-
+        tracker.registerToken(token, RemoteService.notificationApi())
     }
 
     fun unregisterDevice(@NotNull token: String) {
-
+        tracker.unregisterToken(token, RemoteService.notificationApi())
     }
 
     fun notificationRead(@NotNull notification: String) {

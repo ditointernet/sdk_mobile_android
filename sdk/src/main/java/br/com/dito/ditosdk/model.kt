@@ -23,3 +23,5 @@ data class Event(@NonNull val action: String,  @Nullable val revenue: Double? = 
     @SerializedName("created_at") var createdAt: String? = null
     @Expose(serialize = false) var data: CustomData? = null
 }
+
+internal data class EventOff(val id: Int, val json: String, val retry: Int)

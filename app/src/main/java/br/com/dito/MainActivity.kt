@@ -22,11 +22,11 @@ class MainActivity : AppCompatActivity() {
 
         Dito.identify(identify)
 
-        Dito.tracker(Event("comprou", 2.5))
+//        Dito.track(Event("comprou", 2.5))
 
 
-        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {
-            Dito.registerDevice(it.result.token)
-        }
+//        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {
+//            Dito.registerDevice(it.result.token)
+//        }
     }
 }

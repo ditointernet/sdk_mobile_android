@@ -17,15 +17,15 @@ class DitoMessagingService: FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         super.onMessageReceived(remoteMessage)
 
-        remoteMessage?.notification?.apply {
-            sendNotification(this.title, this.body)
+        remoteMessage?.notification?.let {
+            sendNotification(it.title, it.body)
         }
     }
 
     override fun onNewToken(token: String?) {
         super.onNewToken(token)
-        token?.apply {
-            Dito.registerDevice(this)
+        token?.let {
+            Dito.registerDevice(it)
         }
     }
 

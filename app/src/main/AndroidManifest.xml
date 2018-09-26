@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="br.com.dito">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,9 +21,12 @@
             </intent-filter>
         </activity>
 
-        <meta-data android:name="br.com.dito.API_KEY" android:value="MjAxNS0wMy0zMSAxMToxOToyNCAtMDMwME1vYmlsZSBTREtzMTI4"/>
+        <activity android:name="com.facebook.flipper.android.diagnostics.FlipperDiagnosticActivity"
+            android:exported="true"/>
 
-        <meta-data android:name="br.com.dito.API_SECRET" android:value="vutpDmAIUdMfVQgcGiGanCun4opBVRUJoqIIzyGi"/>
+        <meta-data android:name="br.com.dito.API_KEY" android:value="MjAxNC0wNS0yMCAxMTowMzoyMSAtMDMwMEdyYXBoIEFwaSBWMjQ0"/>
+
+        <meta-data android:name="br.com.dito.API_SECRET" android:value="HNVksCIUywbCIBJOv3UjgqmA7p5chPPFrpBbqvFW"/>
 
         <service android:name=".ditosdk.DitoMessagingService">
             <intent-filter>

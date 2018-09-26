@@ -1,10 +1,11 @@
 package br.com.dito.ditosdk
 
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.support.annotation.NonNull
 import android.support.annotation.Nullable
+import br.com.dito.ditosdk.offline.DitoSqlHelper
+import br.com.dito.ditosdk.tracking.TrackerOffline
 import br.com.dito.ditosdk.service.RemoteService
 import br.com.dito.ditosdk.tracking.Tracker
 import org.jetbrains.annotations.NotNull
@@ -16,7 +17,6 @@ object Dito  {
     private lateinit var tracker: Tracker
 
     var options: Options? = null
-
 
     /**
      *
@@ -33,7 +33,7 @@ object Dito  {
                 throw RuntimeException("É preciso configurar API_KEY e API_SECRET no AndroidManifest.")
             }
 
-            tracker = Tracker(apiKey, apiSecret)
+            tracker = Tracker(apiKey, apiSecret, TrackerOffline(DitoSqlHelper.getInstance(context)))
         }
 
         this.options = options
@@ -44,7 +44,7 @@ object Dito  {
         tracker.identify(identify, RemoteService.loginApi())
     }
 
-    fun tracker(@NotNull event: Event) {
+    fun track(@NotNull event: Event) {
         tracker.event(event, RemoteService.eventApi())
     }
 

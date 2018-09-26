@@ -19,29 +19,33 @@ internal class Tracker {
 
     private var apiKey: String
     private var apiSecret: String
+    private var trackerOffline: TrackerOffline
+
     lateinit var id: String
 
-    constructor(apiKey: String, apiSecret: String) {
+    constructor(apiKey: String, apiSecret: String, trackerOffline: TrackerOffline) {
         this.apiKey = apiKey
         this.apiSecret = DitoSDKUtils.SHA1(apiSecret)
+        this.trackerOffline = trackerOffline
     }
 
     fun identify(@NotNull identify: Identify, @NotNull api: LoginApi) {
         launch {
             try {
-                //TODO: Salvar ID no banco
                 id = identify.id
                 val params = SigunpRequest(apiKey, apiSecret, identify)
                 val response = api.signup("portal", identify.id, params).await()
 
                 if (!response.isSuccessful) {
-                    Log.d(TAG, response.errorBody().toString())
-                    //TODO: verificar error e salvar no banco
+                    trackerOffline.identify(identify, null, false)
+                } else {
+                    val reference = response.body()!!
+                            .getAsJsonObject("data").get("reference").asString
+                    trackerOffline.identify(identify, reference, true)
                 }
 
             } catch (e: Exception) {
-                //TODO: verificar error e salvar no banco
-                Log.e(TAG, e.message, e)
+                trackerOffline.identify(identify, null, false)
             }
         }
     }
@@ -53,12 +57,10 @@ internal class Tracker {
                 val response = api.track(id, params).await()
 
                 if (!response.isSuccessful) {
-                    Log.d(TAG, response.errorBody().toString())
-                    //TODO: verificar error e salvar no banco
+                    trackerOffline.event(event)
                 }
             } catch (e: Exception) {
-                //TODO: verificar error e salvar no banco
-                Log.e(TAG, e.message, e)
+                trackerOffline.event(event)
             }
         }
     }

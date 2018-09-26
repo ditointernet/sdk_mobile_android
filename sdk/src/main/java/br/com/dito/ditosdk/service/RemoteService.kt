@@ -73,8 +73,8 @@ internal object RemoteService {
     }
 
     fun notificationApi(): NotificationApi {
-        if (baseUrl.isNullOrEmpty() || !baseUrl.contains("events")) {
-            baseUrl = "https://events.plataformasocial.com.br"
+        if (baseUrl.isNullOrEmpty() || !baseUrl.contains("notification")) {
+            baseUrl = "https://notification.plataformasocial.com.br"
             createRetrofit()
         }
 

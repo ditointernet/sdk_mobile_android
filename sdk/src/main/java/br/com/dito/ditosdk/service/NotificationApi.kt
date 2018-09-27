@@ -1,5 +1,6 @@
 package br.com.dito.ditosdk.service
 
+import br.com.dito.ditosdk.service.utils.NotificationOpenRequest
 import br.com.dito.ditosdk.service.utils.TokenRequest
 import com.google.gson.JsonObject
 import kotlinx.coroutines.experimental.Deferred
@@ -14,7 +15,11 @@ internal interface NotificationApi {
             : Deferred<Response<JsonObject>>
 
 
-    @POST("/users/{id}/mobile-tokens/disable")
-    fun delete(@Path("id") id: String, @Body data: TokenRequest)
+    @POST("/users/{id}/mobile-tokens/disable/")
+    fun disable(@Path("id") id: String, @Body data: TokenRequest)
+            : Deferred<Response<JsonObject>>
+
+    @POST("/notifications/{id}/open/")
+    fun open(@Path("id") id:String, @Body data: NotificationOpenRequest)
             : Deferred<Response<JsonObject>>
 }

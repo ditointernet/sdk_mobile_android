@@ -53,8 +53,22 @@ internal data class TokenRequest(
         val platform: String = "Android",
 
         @SerializedName("id_type")
-        val idType: String = "id"
+        val idType: String = "id",
 
-//        @SerializedName("encoding")
-//        val encoding: String = "base64"
+        @SerializedName("encoding")
+        val encoding: String = "base64"
+)
+
+internal data class NotificationOpenRequest(
+        @SerializedName("platform_api_key")
+        val platformApiKey: String,
+
+        @SerializedName("sha1_signature")
+        val sha1Signature: String,
+
+        @SerializedName("data")
+        val data: String,
+
+        @SerializedName("encoding")
+        val encoding: String = "base64"
 )

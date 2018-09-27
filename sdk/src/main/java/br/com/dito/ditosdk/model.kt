@@ -25,3 +25,6 @@ data class Event(@NonNull val action: String,  @Nullable val revenue: Double? = 
 }
 
 internal data class EventOff(val id: Int, val json: String, val retry: Int)
+
+internal data class IdentifyOff(val id: String, val json: String,
+                                val reference: String, val send: Boolean)

@@ -2,10 +2,7 @@ package br.com.dito.ditosdk.tracking
 
 import android.support.annotation.Nullable
 import android.util.Log
-import br.com.dito.ditosdk.CustomData
-import br.com.dito.ditosdk.Event
-import br.com.dito.ditosdk.EventOff
-import br.com.dito.ditosdk.Identify
+import br.com.dito.ditosdk.*
 import br.com.dito.ditosdk.offline.DitoSqlHelper
 import br.com.dito.ditosdk.service.utils.customDataSerializer
 import br.com.dito.ditosdk.service.utils.eventSerializer
@@ -84,6 +81,14 @@ internal class TrackerOffline {
     fun getAllEvents(): List<EventOff> {
         return database.use {
             select("Event").parseList(classParser())
+        }
+    }
+
+    fun getIdentify(): IdentifyOff {
+        return database.use {
+            select("Identify")
+                    .limit(1)
+                    .parseSingle(classParser())
         }
     }
 }

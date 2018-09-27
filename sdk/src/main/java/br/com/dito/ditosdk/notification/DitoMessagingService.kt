@@ -1,4 +1,4 @@
-package br.com.dito.ditosdk
+package br.com.dito.ditosdk.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,6 +8,8 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import br.com.dito.ditosdk.Dito
+import br.com.dito.ditosdk.R
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -17,23 +19,31 @@ class DitoMessagingService: FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         super.onMessageReceived(remoteMessage)
 
+        val notificationId = remoteMessage?.data?.get("notification")
+
         remoteMessage?.notification?.let {
-            sendNotification(it.title, it.body)
+            sendNotification(it.title, it.body, notificationId)
         }
     }
 
     override fun onNewToken(token: String?) {
         super.onNewToken(token)
         token?.let {
+            if (!Dito.isInitialized()) {
+                Dito.init(applicationContext, null)
+            }
             Dito.registerDevice(it)
         }
     }
 
-    fun sendNotification(title: String?, message: String?) {
+    private fun sendNotification(title: String?, message: String?, notificationId: String?) {
 
-        val intent = Dito.options?.contentIntent ?: getLaunchIntent()
-        intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        val intent = Intent(this, NotificationOpenedReceiver::class.java)
+        notificationId?.let {
+            intent?.putExtra(Dito.DITO_NOTIFICATION_ID, it)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(this, 7, intent, 0)
 
         val smallIcon = Dito.options?.iconNotification ?: applicationInfo.icon
 
@@ -59,10 +69,6 @@ class DitoMessagingService: FirebaseMessagingService() {
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
 
-    }
-
-    private fun getLaunchIntent(): Intent? {
-        return packageManager.getLaunchIntentForPackage(packageName)
     }
 
     private fun getApplicationName(): String {

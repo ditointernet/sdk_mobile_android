@@ -21,18 +21,17 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.facebook.flipper.android.diagnostics.FlipperDiagnosticActivity"
-            android:exported="true"/>
-
         <meta-data android:name="br.com.dito.API_KEY" android:value="MjAxNC0wNS0yMCAxMTowMzoyMSAtMDMwMEdyYXBoIEFwaSBWMjQ0"/>
 
         <meta-data android:name="br.com.dito.API_SECRET" android:value="HNVksCIUywbCIBJOv3UjgqmA7p5chPPFrpBbqvFW"/>
 
-        <service android:name=".ditosdk.DitoMessagingService">
+        <service android:name=".ditosdk.notification.DitoMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <receiver android:name=".ditosdk.notification.NotificationOpenedReceiver"/>
     </application>
 
 </manifest>

@@ -21,8 +21,6 @@ internal object RemoteService {
     private var httpClient: OkHttpClient
     private var baseUrl: String = ""
 
-    private var gsonBuilder: GsonBuilder?
-
     init {
 
         val builder = OkHttpClient.Builder()
@@ -34,12 +32,6 @@ internal object RemoteService {
         }
 
         httpClient = builder.build()
-
-        gsonBuilder = GsonBuilder()
-                .registerTypeAdapter(CustomData::class.java, customDataSerializer())
-                .registerTypeAdapter(Identify::class.java, identifySerializer())
-                .registerTypeAdapter(Event::class.java, eventSerializer())
-                .registerTypeAdapter(EventRequest::class.java, eventRequestSerializer())
     }
 
     private fun createRetrofit() {
@@ -47,7 +39,7 @@ internal object RemoteService {
         val builder = Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addCallAdapterFactory(CoroutineCallAdapterFactory())
-                .addConverterFactory(GsonConverterFactory.create(gsonBuilder!!.create()))
+                .addConverterFactory(GsonConverterFactory.create(gson()))
                 .client(httpClient)
 
         retrofit = builder.build()

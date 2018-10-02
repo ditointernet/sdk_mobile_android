@@ -6,6 +6,7 @@ import br.com.dito.ditosdk.*
 import br.com.dito.ditosdk.offline.DitoSqlHelper
 import br.com.dito.ditosdk.service.utils.customDataSerializer
 import br.com.dito.ditosdk.service.utils.eventSerializer
+import br.com.dito.ditosdk.service.utils.gson
 import br.com.dito.ditosdk.service.utils.identifySerializer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -18,11 +19,7 @@ internal class TrackerOffline {
 
     private var database: DitoSqlHelper
 
-    private var gson: Gson = GsonBuilder()
-            .registerTypeAdapter(CustomData::class.java, customDataSerializer())
-            .registerTypeAdapter(Identify::class.java, identifySerializer())
-            .registerTypeAdapter(Event::class.java, eventSerializer())
-            .create()
+    private var gson: Gson = br.com.dito.ditosdk.service.utils.gson()
 
     constructor(database: DitoSqlHelper) {
         this.database = database
@@ -78,17 +75,32 @@ internal class TrackerOffline {
         }
     }
 
-    fun getAllEvents(): List<EventOff> {
-        return database.use {
-            select("Event").parseList(classParser())
+    fun getAllEvents(): List<EventOff>? {
+        return try {
+            database.use {
+                select("Event").parseList(classParser())
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 
-    fun getIdentify(): IdentifyOff {
-        return database.use {
-            select("Identify")
-                    .limit(1)
-                    .parseSingle(classParser())
+    fun getIdentify(): IdentifyOff? {
+        try {
+            return database.use {
+                select("Identify")
+                        .parseSingle(object: MapRowParser<IdentifyOff>{
+                            override fun parseRow(columns: Map<String, Any?>): IdentifyOff {
+                                val id = columns.getValue("_id").toString()
+                                val json = columns.getValue("json").toString()
+                                val reference = columns.getValue("reference").toString()
+                                val send = columns.getValue("send").toString().toBoolean()
+                                return IdentifyOff(id, json, reference, send)
+                            }
+                        })
+            }
+        } catch (e: Exception) {
+            return null
         }
     }
 }

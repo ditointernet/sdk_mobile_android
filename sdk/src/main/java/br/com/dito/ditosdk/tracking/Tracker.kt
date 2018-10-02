@@ -7,10 +7,7 @@ import br.com.dito.ditosdk.Identify
 import br.com.dito.ditosdk.service.EventApi
 import br.com.dito.ditosdk.service.LoginApi
 import br.com.dito.ditosdk.service.NotificationApi
-import br.com.dito.ditosdk.service.utils.EventRequest
-import br.com.dito.ditosdk.service.utils.NotificationOpenRequest
-import br.com.dito.ditosdk.service.utils.SigunpRequest
-import br.com.dito.ditosdk.service.utils.TokenRequest
+import br.com.dito.ditosdk.service.utils.*
 import br.com.dito.ditosdk.utils.DitoSDKUtils
 import com.google.gson.JsonObject
 import kotlinx.coroutines.experimental.launch
@@ -19,8 +16,8 @@ internal class Tracker {
 
     private val TAG = "Tracker"
 
-    private var apiKey: String
-    private var apiSecret: String
+    var apiKey: String
+    var apiSecret: String
     private var trackerOffline: TrackerOffline
 
     lateinit var id: String

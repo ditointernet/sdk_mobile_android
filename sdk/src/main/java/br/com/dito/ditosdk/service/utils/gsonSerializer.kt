@@ -1,8 +1,10 @@
 package br.com.dito.ditosdk.service.utils
 
+import br.com.dito.ditosdk.CustomData
 import br.com.dito.ditosdk.Event
 import br.com.dito.ditosdk.Identify
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonSerializer
 
@@ -48,4 +50,13 @@ internal fun eventRequestSerializer(): JsonSerializer<EventRequest> {
         request.addProperty("event", event)
         request
     }
+}
+
+internal fun gson(): Gson {
+    return GsonBuilder()
+            .registerTypeAdapter(CustomData::class.java, customDataSerializer())
+            .registerTypeAdapter(Identify::class.java, identifySerializer())
+            .registerTypeAdapter(Event::class.java, eventSerializer())
+            .registerTypeAdapter(EventRequest::class.java, eventRequestSerializer())
+            .create()
 }

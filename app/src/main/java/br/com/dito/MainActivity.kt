@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         Dito.identify(identify)
 
-//        Dito.track(Event("comprou", 2.5))
+        Dito.track(Event("comprou", 2.5))
 
 
         FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {

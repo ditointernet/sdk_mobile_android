@@ -11,7 +11,7 @@ class DitoApplication: Application() {
         super.onCreate()
 
         if (BuildConfig.DEBUG) {
-            Stetho.initializeWithDefaults(this);
+            Stetho.initializeWithDefaults(this)
         }
         Dito.init(this, null)
     }

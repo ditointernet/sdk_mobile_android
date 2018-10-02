@@ -7,7 +7,10 @@ import android.support.annotation.Nullable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class Options (val contentIntent: Intent?, @IdRes val iconNotification: Int?)
+data class Options (val retry: Int = 5) {
+    var contentIntent: Intent? = null
+    @IdRes var iconNotification: Int? = null
+}
 
 data class Identify(@NonNull @Expose(serialize = false) val id: String) {
     var name: String? = null

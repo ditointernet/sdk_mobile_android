@@ -72,7 +72,7 @@ internal class Tracker {
                 }
             } catch (e: Exception) {
                 if (e is UninitializedPropertyAccessException) {
-                    throw RuntimeException("Antes de enviar um evento é preciso identificar o usuário.")
+                    Log.e(TAG, "Antes de enviar um evento é preciso identificar o usuário.")
                 }
                 trackerOffline.event(params)
             }
@@ -90,7 +90,7 @@ internal class Tracker {
                 }
             } catch (e: Exception) {
                 if (e is UninitializedPropertyAccessException) {
-                    throw RuntimeException("Antes de registrar o token é preciso identificar o usuário.")
+                    Log.e(TAG, "Antes de registrar o token é preciso identificar o usuário.")
                 }
             }
         }
@@ -104,10 +104,8 @@ internal class Tracker {
 
                 if (!response.isSuccessful) {
                     Log.d(TAG, response.errorBody().toString())
-                    //TODO: verificar error e salvar no banco
                 }
             } catch (e: Exception) {
-                //TODO: verificar error e salvar no banco
                 Log.e(TAG, e.message, e)
             }
         }

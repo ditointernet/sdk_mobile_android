@@ -13,4 +13,8 @@ internal interface EventApi {
     @POST("/users/{id}")
     fun track(@Path("id") id: String, @Body data: EventRequest)
             : Deferred<Response<JsonObject>>
+
+    @POST("/users/{id}")
+    fun track(@Path("id") id: String, @Body data: JsonObject)
+            : Deferred<Response<JsonObject>>
 }

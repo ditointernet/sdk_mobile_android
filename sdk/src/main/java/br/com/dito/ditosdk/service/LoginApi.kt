@@ -13,4 +13,9 @@ internal interface LoginApi {
     fun signup(@Path("network") network: String,
                @Path("id") id: String, @Body data: SigunpRequest)
             : Deferred<Response<JsonObject>>
+
+    @POST("/users/{network}/{id}/signup")
+    fun signup(@Path("network") network: String,
+               @Path("id") id: String, @Body data: JsonObject)
+            : Deferred<Response<JsonObject>>
 }

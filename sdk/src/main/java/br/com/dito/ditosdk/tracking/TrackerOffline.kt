@@ -4,10 +4,7 @@ import android.support.annotation.Nullable
 import android.util.Log
 import br.com.dito.ditosdk.*
 import br.com.dito.ditosdk.offline.DitoSqlHelper
-import br.com.dito.ditosdk.service.utils.customDataSerializer
-import br.com.dito.ditosdk.service.utils.eventSerializer
-import br.com.dito.ditosdk.service.utils.gson
-import br.com.dito.ditosdk.service.utils.identifySerializer
+import br.com.dito.ditosdk.service.utils.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.jetbrains.anko.db.*
@@ -25,13 +22,13 @@ internal class TrackerOffline {
         this.database = database
     }
 
-    fun identify(@NotNull identify: Identify, @Nullable reference: String?, send: Boolean) {
+    fun identify(@NotNull sigunpRequest: SigunpRequest, @Nullable reference: String?, send: Boolean) {
         try {
-            val json = gson.toJson(identify)
+            val json = gson.toJson(sigunpRequest)
             database.use {
                 delete("Identify")
                 insert("Identify",
-                        "_id" to identify.id,
+                        "_id" to sigunpRequest.userData.id,
                         "json" to json,
                         "reference" to reference,
                         "send" to send
@@ -42,9 +39,20 @@ internal class TrackerOffline {
         }
     }
 
-    fun event(@NotNull event: Event) {
+    fun updateIdentify(id: String, reference: String, send: Boolean) {
         try {
-            val json = gson.toJson(event)
+            database.use {
+                update("Identify", "reference" to reference, "send" to send)
+                        .whereSimple("_id = ?", id)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, e.message, e)
+        }
+    }
+
+    fun event(@NotNull eventRequest: EventRequest) {
+        try {
+            val json = gson.toJson(eventRequest)
             database.use {
                 insert("Event",
                         "json" to json)
@@ -54,20 +62,20 @@ internal class TrackerOffline {
         }
     }
 
-    fun deleteEvent(id: Int) {
+    fun delete(id: Int, tableName: String) {
         try {
             database.use {
-                delete("Event", "_id = {id}", "id" to id)
+                delete(tableName, "_id = {id}", "id" to id)
             }
         } catch(e: Exception) {
             Log.e(TAG, e.message, e)
         }
     }
 
-    fun updateEvent(id: Int, retry: Int) {
+    fun update(id: Int, retry: Int, tableName: String) {
         try {
             database.use {
-                update("Event", "retry" to retry)
+                update(tableName, "retry" to retry)
                         .whereSimple("_id = ?", id.toString())
             }
         } catch (e: Exception) {
@@ -79,6 +87,16 @@ internal class TrackerOffline {
         return try {
             database.use {
                 select("Event").parseList(classParser())
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    fun getAllNotificationRead(): List<NotificationReadOff>? {
+        return try {
+            database.use {
+                select("NotificationRead").parseList(classParser())
             }
         } catch (e: Exception) {
             null
@@ -101,6 +119,18 @@ internal class TrackerOffline {
             }
         } catch (e: Exception) {
             return null
+        }
+    }
+
+    fun notificationRead(notificationOpenRequest: NotificationOpenRequest) {
+        try {
+            val json = gson.toJson(notificationOpenRequest)
+            database.use {
+                insert("NotificationRead",
+                        "json" to json)
+            }
+        } catch(e: Exception) {
+            Log.e(TAG, e.message, e)
         }
     }
 }

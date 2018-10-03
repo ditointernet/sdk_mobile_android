@@ -1,21 +1,19 @@
 package br.com.dito.ditosdk.tracking
 
-import br.com.dito.ditosdk.Event
 import br.com.dito.ditosdk.EventOff
-import br.com.dito.ditosdk.Identify
+import br.com.dito.ditosdk.NotificationReadOff
 import br.com.dito.ditosdk.service.RemoteService
-import br.com.dito.ditosdk.service.utils.EventRequest
+import com.google.gson.JsonObject
 import kotlinx.coroutines.experimental.launch
 
 internal class TrackerRetry {
-
-    private val TAG = "TrackerRetry"
 
     private var tracker: Tracker
     private var trackerOffline: TrackerOffline
     private var retry: Int
     private val gson = br.com.dito.ditosdk.service.utils.gson()
     private val apiEvent = RemoteService.eventApi()
+    private val apiNotification = RemoteService.notificationApi()
 
     constructor(tracker: Tracker, trackerOffline: TrackerOffline, retry: Int = 5) {
         this.tracker = tracker
@@ -26,6 +24,7 @@ internal class TrackerRetry {
     fun uploadEvents() {
         checkIdentify()
         checkEvent()
+        checkNotificationRead()
     }
 
     private fun checkIdentify() {
@@ -33,8 +32,14 @@ internal class TrackerRetry {
             val identifyOff = trackerOffline.getIdentify()
             identifyOff?.let {
                 if (!it.send) {
-                    val value = gson.fromJson(it.json, Identify::class.java)
-                    tracker.identify(value, RemoteService.loginApi())
+                    val value = gson.fromJson(it.json, JsonObject::class.java)
+                    val api = RemoteService.loginApi()
+                    val response = api.signup("portal", identifyOff.id, value).await()
+                    if (response.isSuccessful) {
+                        val reference = response.body()!!
+                                .getAsJsonObject("data").get("reference").asString
+                        trackerOffline.updateIdentify(identifyOff.id, reference, true)
+                    }
                 }
             }
         }
@@ -45,7 +50,7 @@ internal class TrackerRetry {
             val events = trackerOffline.getAllEvents()
             events?.forEach {
                 if (it.retry == retry) {
-                    trackerOffline.deleteEvent(it.id)
+                    trackerOffline.delete(it.id, "Event")
                 }
                 else {
                     sendEvent(it, tracker.id)
@@ -55,19 +60,45 @@ internal class TrackerRetry {
     }
 
     private suspend fun sendEvent(eventOff: EventOff, id: String) {
-        val event = gson.fromJson<Event>(eventOff.json, Event::class.java)
-
         try {
-            val params = EventRequest(tracker.apiKey, tracker.apiSecret, event)
+            val params = gson.fromJson(eventOff.json, JsonObject::class.java)
             val response = apiEvent.track(id, params).await()
-
             if (!response.isSuccessful) {
-                trackerOffline.updateEvent(eventOff.id, (eventOff.retry + 1))
+                trackerOffline.update(eventOff.id, (eventOff.retry + 1), "Event")
             } else {
-                trackerOffline.deleteEvent(eventOff.id)
+                trackerOffline.delete(eventOff.id, "Event")
             }
         } catch (e: Exception) {
-            trackerOffline.updateEvent(eventOff.id, (eventOff.retry + 1))
+            trackerOffline.update(eventOff.id, (eventOff.retry + 1), "Event")
+        }
+    }
+
+
+    private fun checkNotificationRead() {
+        launch {
+            val notifications = trackerOffline.getAllNotificationRead()
+            notifications?.forEach {
+                if (it.retry == retry) {
+                    trackerOffline.delete(it.id, "NotificationRead")
+                }
+                else {
+                    sendNotificationRead(it, tracker.id)
+                }
+            }
+        }
+    }
+
+    private suspend fun sendNotificationRead(notificationReadOff: NotificationReadOff, id: String) {
+        try {
+            val params = gson.fromJson(notificationReadOff.json, JsonObject::class.java)
+            val response = apiNotification.open(id, params).await()
+            if (!response.isSuccessful) {
+                trackerOffline.update(notificationReadOff.id, (notificationReadOff.retry + 1), "NotificationRead")
+            } else {
+                trackerOffline.delete(notificationReadOff.id, "NotificationRead")
+            }
+        } catch (e: Exception) {
+            trackerOffline.update(notificationReadOff.id, (notificationReadOff.retry + 1), "NotificationRead")
         }
     }
 

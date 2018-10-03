@@ -42,36 +42,36 @@ internal class Tracker {
 
     fun identify(@NonNull identify: Identify, @NonNull api: LoginApi) {
         launch {
+            id = identify.id
+            val params = SigunpRequest(apiKey, apiSecret, identify)
             try {
-                id = identify.id
-                val params = SigunpRequest(apiKey, apiSecret, identify)
                 val response = api.signup("portal", identify.id, params).await()
 
                 if (!response.isSuccessful) {
-                    trackerOffline.identify(identify, null, false)
+                    trackerOffline.identify(params, null, false)
                 } else {
                     reference = response.body()!!
                             .getAsJsonObject("data").get("reference").asString
-                    trackerOffline.identify(identify, reference, true)
+                    trackerOffline.identify(params, reference, true)
                 }
 
             } catch (e: Exception) {
-                trackerOffline.identify(identify, null, false)
+                trackerOffline.identify(params, null, false)
             }
         }
     }
 
     fun event(@NonNull event: Event, @NonNull api: EventApi ) {
         launch {
+            val params = EventRequest(apiKey, apiSecret, event)
             try {
-                val params = EventRequest(apiKey, apiSecret, event)
                 val response = api.track(id, params).await()
 
                 if (!response.isSuccessful) {
-                    trackerOffline.event(event)
+                    trackerOffline.event(params)
                 }
             } catch (e: Exception) {
-                trackerOffline.event(event)
+                trackerOffline.event(params)
             }
         }
     }
@@ -112,23 +112,21 @@ internal class Tracker {
 
     fun notificationRead(@NonNull notificationId: String, @NonNull api: NotificationApi) {
         launch {
+            val data = JsonObject()
+            data.addProperty("identifier", id)
+            data.addProperty("reference", reference)
+
+            val params = NotificationOpenRequest(apiKey, apiSecret, data.toString())
+
             try {
-                val data = JsonObject()
-                data.addProperty("identifier", id)
-                data.addProperty("reference", reference)
-
-                val params = NotificationOpenRequest(apiKey, apiSecret, data.toString())
-
                 val response = api.open(notificationId, params).await()
 
                 if (!response.isSuccessful) {
-                    Log.d(TAG, response.errorBody().toString())
-                    //TODO: verificar error e salvar no banco
+                    trackerOffline.notificationRead(params)
                 }
 
             } catch (e: Exception) {
-                //TODO: verificar error e salvar no banco
-                Log.e(TAG, e.message, e)
+                trackerOffline.notificationRead(params)
             }
         }
     }

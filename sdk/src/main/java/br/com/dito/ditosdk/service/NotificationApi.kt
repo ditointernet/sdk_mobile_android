@@ -22,4 +22,8 @@ internal interface NotificationApi {
     @POST("/notifications/{id}/open/")
     fun open(@Path("id") id:String, @Body data: NotificationOpenRequest)
             : Deferred<Response<JsonObject>>
+
+    @POST("/notifications/{id}/open/")
+    fun open(@Path("id") id:String, @Body data: JsonObject)
+            : Deferred<Response<JsonObject>>
 }

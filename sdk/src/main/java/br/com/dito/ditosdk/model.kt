@@ -31,3 +31,5 @@ internal data class EventOff(val id: Int, val json: String, val retry: Int)
 
 internal data class IdentifyOff(val id: String, val json: String,
                                 val reference: String, val send: Boolean)
+
+internal data class NotificationReadOff(val id: Int, val json: String, val retry: Int)

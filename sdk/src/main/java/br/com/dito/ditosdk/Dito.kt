@@ -42,8 +42,8 @@ object Dito  {
             val trackerOffline = TrackerOffline(DitoSqlHelper.getInstance(context))
             tracker = Tracker(apiKey, apiSecret, trackerOffline)
 
-//            val trackerRetry = TrackerRetry(tracker, trackerOffline, options?.retry ?: 5)
-//            trackerRetry.uploadEvents()
+            val trackerRetry = TrackerRetry(tracker, trackerOffline, options?.retry ?: 5)
+            trackerRetry.uploadEvents()
         }
     }
 

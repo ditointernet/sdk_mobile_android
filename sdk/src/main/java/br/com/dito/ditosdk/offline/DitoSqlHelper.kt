@@ -30,6 +30,11 @@ internal class DitoSqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "dito"
                 "_id" to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
                 "json" to TEXT,
                 "retry" to INTEGER + DEFAULT("1"))
+
+        db.createTable("NotificationRead", true,
+                "_id" to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
+                "json" to TEXT,
+                "retry" to INTEGER + DEFAULT("1"))
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {

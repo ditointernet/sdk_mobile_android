@@ -1,6 +1,0 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="br.com.dito.ditosdk" >
-
-    <uses-permission android:name="android.permission.INTERNET" />
-
-</manifest>

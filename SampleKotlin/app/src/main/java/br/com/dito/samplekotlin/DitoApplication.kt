@@ -1,7 +1,6 @@
 package br.com.dito.samplekotlin
 
 import android.app.Application
-import br.com.dito.ditosdk.BuildConfig
 import br.com.dito.ditosdk.Dito
 import com.facebook.stetho.Stetho
 

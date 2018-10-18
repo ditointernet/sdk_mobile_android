@@ -13,8 +13,7 @@ import br.com.dito.ditosdk.service.utils.SigunpRequest
 import br.com.dito.ditosdk.service.utils.TokenRequest
 import br.com.dito.ditosdk.utils.DitoSDKUtils
 import com.google.gson.JsonObject
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 internal class Tracker(private var apiKey: String, apiSecret: String, private var trackerOffline: TrackerOffline) {
 
@@ -28,7 +27,7 @@ internal class Tracker(private var apiKey: String, apiSecret: String, private va
     }
 
     private fun loadIdentify() {
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             val identify = trackerOffline.getIdentify()
             identify?.let {
                 id = it.id
@@ -38,7 +37,7 @@ internal class Tracker(private var apiKey: String, apiSecret: String, private va
     }
 
     fun identify(@NonNull identify: Identify, @NonNull api: LoginApi) {
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             id = identify.id
             val params = SigunpRequest(apiKey, apiSecret, identify)
             try {
@@ -59,7 +58,7 @@ internal class Tracker(private var apiKey: String, apiSecret: String, private va
     }
 
     fun event(@NonNull event: Event, @NonNull api: EventApi ) {
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             val params = EventRequest(apiKey, apiSecret, event)
             try {
                 val response = api.track(id, params).await()
@@ -77,7 +76,7 @@ internal class Tracker(private var apiKey: String, apiSecret: String, private va
     }
 
     fun registerToken(@NonNull token: String, @NonNull api: NotificationApi) {
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             try {
                 val params = TokenRequest(apiKey, apiSecret, token)
                 val response = api.add(id, params).await()
@@ -94,7 +93,7 @@ internal class Tracker(private var apiKey: String, apiSecret: String, private va
     }
 
     fun unregisterToken(@NonNull token: String, @NonNull api: NotificationApi) {
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             try {
                 val params = TokenRequest(apiKey, apiSecret, token)
                 val response = api.disable(id, params).await()
@@ -109,7 +108,7 @@ internal class Tracker(private var apiKey: String, apiSecret: String, private va
     }
 
     fun notificationRead(@NonNull notificationId: String, @NonNull api: NotificationApi) {
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             val data = JsonObject()
             data.addProperty("identifier", id)
             data.addProperty("reference", reference)

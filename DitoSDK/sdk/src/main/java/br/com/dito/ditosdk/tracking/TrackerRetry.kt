@@ -4,7 +4,9 @@ import br.com.dito.ditosdk.EventOff
 import br.com.dito.ditosdk.NotificationReadOff
 import br.com.dito.ditosdk.service.RemoteService
 import com.google.gson.JsonObject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 
 internal class TrackerRetry(private var tracker: Tracker, private var trackerOffline: TrackerOffline, private var retry: Int = 5) {
@@ -20,7 +22,7 @@ internal class TrackerRetry(private var tracker: Tracker, private var trackerOff
     }
 
     private fun checkIdentify() {
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             val identifyOff = trackerOffline.getIdentify()
             identifyOff?.let {
                 if (!it.send) {
@@ -38,7 +40,7 @@ internal class TrackerRetry(private var tracker: Tracker, private var trackerOff
     }
 
     private fun checkEvent() {
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             val events = trackerOffline.getAllEvents()
             events?.forEach {
                 if (it.retry == retry) {
@@ -67,7 +69,7 @@ internal class TrackerRetry(private var tracker: Tracker, private var trackerOff
 
 
     private fun checkNotificationRead() {
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             val notifications = trackerOffline.getAllNotificationRead()
             notifications?.forEach {
                 if (it.retry == retry) {

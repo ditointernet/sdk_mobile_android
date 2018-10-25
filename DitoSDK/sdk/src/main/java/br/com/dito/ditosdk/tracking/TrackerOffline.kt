@@ -21,7 +21,7 @@ internal class TrackerOffline(private var database: DitoSqlHelper) {
         try {
             val json = gson.toJson(sigunpRequest)
             database.use {
-                delete("Identify")
+                delete("Identify", "_id = {id}", "id" to sigunpRequest.userData.id)
                 insert("Identify",
                         "_id" to sigunpRequest.userData.id,
                         "json" to json,

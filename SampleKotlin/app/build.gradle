@@ -32,7 +32,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     //Dito SDK
-    implementation 'com.github.ditointernet:sdk_mobile_android:v2.0.0-rc03'
+    implementation 'com.github.ditointernet:sdk_mobile_android:v2.0.0-rc04'
 
     implementation 'com.google.firebase:firebase-core:16.0.4'
     implementation "com.google.firebase:firebase-messaging:17.3.4"

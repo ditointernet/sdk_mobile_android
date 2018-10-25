@@ -1,6 +1,7 @@
 package br.com.dito.ditosdk.service
 
 import br.com.dito.ditosdk.BuildConfig
+import br.com.dito.ditosdk.Dito
 import br.com.dito.ditosdk.service.utils.gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
@@ -18,10 +19,15 @@ internal object RemoteService {
     init {
 
         val builder = OkHttpClient.Builder()
-
-        if (BuildConfig.DEBUG) {
+        val debug = Dito.options?.debug ?: false
+        if (debug) {
             val logging = HttpLoggingInterceptor()
-            logging.level = HttpLoggingInterceptor.Level.BODY
+            if (BuildConfig.DEBUG) {
+                logging.level = HttpLoggingInterceptor.Level.BODY
+            }
+            else {
+                logging.level = HttpLoggingInterceptor.Level.BASIC
+            }
             builder.addInterceptor(logging)
         }
 

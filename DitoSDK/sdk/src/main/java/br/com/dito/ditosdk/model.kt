@@ -10,6 +10,7 @@ import com.google.gson.annotations.SerializedName
 data class Options (val retry: Int = 5) {
     var contentIntent: Intent? = null
     @IdRes var iconNotification: Int? = null
+    var debug: Boolean = false
 }
 
 data class Identify(@NonNull @Expose(serialize = false) val id: String) {
@@ -18,13 +19,13 @@ data class Identify(@NonNull @Expose(serialize = false) val id: String) {
     var gender: String? = null
     var location: String? = null
     var birthday: String? = null
-    @SerializedName("createdAt")
+    @SerializedName("created_at")
     var createdAt: String? = null
     @Expose(serialize = false) var data: CustomData? = null
 }
 
 data class Event(@NonNull val action: String,  @Nullable val revenue: Double? = null) {
-    @SerializedName("createdAt") var createdAt: String? = null
+    @SerializedName("created_at") var createdAt: String? = null
     @Expose(serialize = false) var data: CustomData? = null
 }
 

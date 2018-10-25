@@ -1,0 +1,17 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="br.com.dito.ditosdk">
+
+    <application>
+        <meta-data android:name="br.com.dito.API_KEY" android:value="MjAxNC0wNS0yMCAxMTowMzoyMSAtMDMwMEdyYXBoIEFwaSBWMjQ0"/>
+
+        <meta-data android:name="br.com.dito.API_SECRET" android:value="HNVksCIUywbCIBJOv3UjgqmA7p5chPPFrpBbqvFW"/>
+    </application>
+
+    <instrumentation
+            android:name="android.support.test.runner.AndroidJUnitRunner"
+            android:targetPackage="br.com.dito.ditosdk"
+            android:targetProcesses="*" > <!-- The instrumentation attribute introduced in O -->
+
+    </instrumentation>
+
+</manifest>

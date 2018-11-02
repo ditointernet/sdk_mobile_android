@@ -4,8 +4,10 @@ import android.content.Intent
 import android.support.annotation.IdRes
 import android.support.annotation.NonNull
 import android.support.annotation.Nullable
+import br.com.dito.ditosdk.utils.formatToISO
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 data class Options (val retry: Int = 5) {
     var contentIntent: Intent? = null
@@ -20,12 +22,12 @@ data class Identify(@NonNull @Expose(serialize = false) val id: String) {
     var location: String? = null
     var birthday: String? = null
     @SerializedName("created_at")
-    var createdAt: String? = null
+    var createdAt: String? = Date().formatToISO()
     @Expose(serialize = false) var data: CustomData? = null
 }
 
 data class Event(@NonNull val action: String,  @Nullable val revenue: Double? = null) {
-    @SerializedName("created_at") var createdAt: String? = null
+    @SerializedName("created_at") var createdAt: String? = Date().formatToISO()
     @Expose(serialize = false) var data: CustomData? = null
 }
 

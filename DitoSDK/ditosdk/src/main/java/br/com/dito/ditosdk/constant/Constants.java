@@ -47,6 +47,7 @@ public class Constants {
         public static final String CHANNEL_TYPE_VALUE = "mobile";
         public static final String EVENT = "event";
         public static final String ID = "id";
+        public static final String NOTIFICATION_LOG_ID = "notification_log_id";
         public static final String USER_AGENT = "User-Agent";
         public static final String USER_AGENT_MOBILE = "Android";
     }

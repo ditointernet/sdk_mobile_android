@@ -30,9 +30,10 @@ internal class TrackerRetry(private var tracker: Tracker, private var trackerOff
                     val api = RemoteService.loginApi()
                     val response = api.signup("portal", identifyOff.id, value).await()
                     if (response.isSuccessful) {
-                        val reference = response.body()!!
-                                .getAsJsonObject("data").get("reference").asString
-                        trackerOffline.updateIdentify(identifyOff.id, reference, true)
+                        val reference = response.body()?.getAsJsonObject("data")?.get("reference")?.asString
+                        reference?.let {
+                            trackerOffline.updateIdentify(identifyOff.id, it, true)
+                        }
                     }
                 }
             }

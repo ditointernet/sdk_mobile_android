@@ -20,9 +20,10 @@ class DitoMessagingService: FirebaseMessagingService() {
         super.onMessageReceived(remoteMessage)
 
         val notificationId = remoteMessage?.data?.get("notification")
+        val reference = remoteMessage?.data?.get("reference")
 
         remoteMessage?.notification?.let {
-            sendNotification(it.title, it.body, notificationId)
+            sendNotification(it.title, it.body, notificationId, reference)
         }
     }
 
@@ -36,11 +37,15 @@ class DitoMessagingService: FirebaseMessagingService() {
         }
     }
 
-    private fun sendNotification(title: String?, message: String?, notificationId: String?) {
+    private fun sendNotification(title: String?, message: String?, notificationId: String?, @Nullable reference: String) {
 
         val intent = Intent(this, NotificationOpenedReceiver::class.java)
         notificationId?.let {
             intent.putExtra(Dito.DITO_NOTIFICATION_ID, it)
+        }
+
+        reference?.let {
+            intent.putExtra(Dito.DITO_NOTIFICATION_REFERENCE, reference)
         }
 
         val pendingIntent = PendingIntent.getBroadcast(this, 7, intent, 0)

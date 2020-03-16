@@ -78,8 +78,8 @@ object Dito  {
     /**
      * @param notification
      */
-    fun notificationRead(@NotNull notification: String) {
-        tracker.notificationRead(notification, RemoteService.notificationApi())
+    fun notificationRead(@NotNull notification: String, @Nullable reference: String) {
+        tracker.notificationRead(notification, RemoteService.notificationApi(), reference)
     }
 
     internal fun isInitialized(): Boolean {

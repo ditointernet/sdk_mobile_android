@@ -9,6 +9,8 @@ import br.com.dito.ditosdk.Dito
 class NotificationOpenedReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.d("OpenedReceiver", "onReceive")
+        val notificationId = ""
+        val reference = ""
 
         context?.let {
             if (!Dito.isInitialized()) {
@@ -17,9 +19,16 @@ class NotificationOpenedReceiver: BroadcastReceiver() {
         }
 
         intent?.getStringExtra(Dito.DITO_NOTIFICATION_ID)?.let {
-            Dito.notificationRead(it)
+            notificationId = it
         }
 
+        intent?.getStringExtra(Dito.DITO_NOTIFICATION_REFERENCE)?.let {
+            reference = it
+        }
+
+        if reference? && notificationId? {
+            Dito.notificationRead(notificationId, reference)
+        }
 
         context?.let {
             getIntent(it)?.let {

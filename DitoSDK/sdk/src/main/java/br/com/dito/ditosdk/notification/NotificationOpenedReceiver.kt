@@ -3,14 +3,12 @@ package br.com.dito.ditosdk.notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import br.com.dito.ditosdk.Dito
 
 class NotificationOpenedReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.d("OpenedReceiver", "onReceive")
-        val notificationId = ""
-        val reference = ""
+        var notificationId: String = ""
+        var reference: String = ""
 
         context?.let {
             if (!Dito.isInitialized()) {
@@ -26,17 +24,16 @@ class NotificationOpenedReceiver: BroadcastReceiver() {
             reference = it
         }
 
-        if reference? && notificationId? {
+        if (reference != "" && notificationId != "") {
             Dito.notificationRead(notificationId, reference)
         }
 
         context?.let {
             getIntent(it)?.let {
-                context.startActivity(intent)
+                context.startActivity(it)
             }
         }
     }
-
 
     private fun getIntent(context: Context): Intent? {
         val packageName = context.packageName

@@ -12,18 +12,40 @@ import br.com.dito.ditosdk.Dito
 import br.com.dito.ditosdk.R
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import org.json.JSONObject
 
 
 class DitoMessagingService: FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         super.onMessageReceived(remoteMessage)
+        var notificationId: String = ""
+        var reference: String = ""
+        val data = remoteMessage?.getData()?.getValue("data")
+        val objData = JSONObject(data)
 
-        val notificationId = remoteMessage?.data?.get("notification")
-        val reference = remoteMessage?.data?.get("reference")
+        objData.get("notification")?.let {
+            if (it is String){
+                notificationId = it
+            } else if (it is Integer) {
+                notificationId = it.toString()
+            } else {
+                notificationId = ""
+            }
+        }
 
-        remoteMessage?.notification?.let {
-            sendNotification(it.title, it.body, notificationId, reference)
+        objData.get("reference")?.let {
+            if (it is String){
+                reference = it
+            } else {
+                reference = ""
+            }
+        }
+
+        val message = objData.getJSONObject("details").get("message") as String
+
+        if (reference != "" && notificationId != "") {
+            sendNotification(null, message, notificationId, reference)
         }
     }
 
@@ -37,16 +59,11 @@ class DitoMessagingService: FirebaseMessagingService() {
         }
     }
 
-    private fun sendNotification(title: String?, message: String?, notificationId: String?, @Nullable reference: String) {
-
+    private fun sendNotification(title: String?, message: String?, notificationId: String, reference: String) {
         val intent = Intent(this, NotificationOpenedReceiver::class.java)
-        notificationId?.let {
-            intent.putExtra(Dito.DITO_NOTIFICATION_ID, it)
-        }
 
-        reference?.let {
-            intent.putExtra(Dito.DITO_NOTIFICATION_REFERENCE, reference)
-        }
+        intent.putExtra(Dito.DITO_NOTIFICATION_ID, notificationId)
+        intent.putExtra(Dito.DITO_NOTIFICATION_REFERENCE, reference)
 
         val pendingIntent = PendingIntent.getBroadcast(this, 7, intent, 0)
 

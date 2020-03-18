@@ -107,7 +107,7 @@ internal class Tracker(private var apiKey: String, apiSecret: String, private va
         }
     }
 
-    fun notificationRead(@NonNull notificationId: String, @NonNull api: NotificationApi, @Nullable notificationReference: String) {
+    fun notificationRead(@NonNull notificationId: String, @NonNull api: NotificationApi, notificationReference: String) {
         GlobalScope.launch(Dispatchers.IO) {
             val data = JsonObject()
             data.addProperty("identifier", notificationReference.substring(5))

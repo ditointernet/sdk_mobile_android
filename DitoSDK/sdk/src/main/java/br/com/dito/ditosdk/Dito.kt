@@ -17,7 +17,8 @@ object Dito  {
     private lateinit var apiSecret: String
     private lateinit var tracker: Tracker
 
-   const val  DITO_NOTIFICATION_ID = "br.com.dito.ditosdk.DITO_NOTIFICATION_ID"
+    const val DITO_NOTIFICATION_ID = "br.com.dito.ditosdk.DITO_NOTIFICATION_ID"
+    const val DITO_NOTIFICATION_REFERENCE = "br.com.dito.ditosdk.DITO_NOTIFICATION_REFERENCE"
 
     var options: Options? = null
 

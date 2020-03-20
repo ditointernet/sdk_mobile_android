@@ -37,8 +37,6 @@ class DitoMessagingService: FirebaseMessagingService() {
         objData.get("reference")?.let {
             if (it is String){
                 reference = it
-            } else {
-                reference = ""
             }
         }
 

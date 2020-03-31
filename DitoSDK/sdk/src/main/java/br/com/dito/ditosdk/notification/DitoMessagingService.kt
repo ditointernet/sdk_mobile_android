@@ -34,11 +34,13 @@ class DitoMessagingService: FirebaseMessagingService() {
             }
         }
 
-        objData.get("reference")?.let {
-            if (it is String){
-                reference = it
+        try{
+            objData.get("reference")?.let {
+                if (it is String) {
+                    reference = it
+                }
             }
-        }
+        } catch (e: Exception) {}
 
         val message = objData.getJSONObject("details").get("message") as String
 

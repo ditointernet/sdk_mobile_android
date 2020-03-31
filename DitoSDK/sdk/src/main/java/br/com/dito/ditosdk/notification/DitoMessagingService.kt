@@ -21,6 +21,7 @@ class DitoMessagingService: FirebaseMessagingService() {
         super.onMessageReceived(remoteMessage)
         var notificationId: String = ""
         var reference: String = ""
+        var deepLink: String = ""
         val data = remoteMessage?.getData()?.getValue("data")
         val objData = JSONObject(data)
 
@@ -44,8 +45,12 @@ class DitoMessagingService: FirebaseMessagingService() {
 
         val message = objData.getJSONObject("details").get("message") as String
 
+        try {
+            deepLink = objData.getJSONObject("details").get("link") as String
+        } catch (e: Exception) {}
+
         if (reference != "" && notificationId != "") {
-            sendNotification(null, message, notificationId, reference)
+            sendNotification(null, message, notificationId, reference, deepLink)
         }
     }
 
@@ -59,11 +64,16 @@ class DitoMessagingService: FirebaseMessagingService() {
         }
     }
 
-    private fun sendNotification(title: String?, message: String?, notificationId: String, reference: String) {
+    private fun sendNotification(title: String?,
+                                 message: String?,
+                                 notificationId: String,
+                                 reference: String,
+                                 deepLink: String) {
         val intent = Intent(this, NotificationOpenedReceiver::class.java)
 
         intent.putExtra(Dito.DITO_NOTIFICATION_ID, notificationId)
         intent.putExtra(Dito.DITO_NOTIFICATION_REFERENCE, reference)
+        intent.putExtra(Dito.DITO_DEEP_LINK, deepLink)
 
         val pendingIntent = PendingIntent.getBroadcast(this, 7, intent, 0)
 

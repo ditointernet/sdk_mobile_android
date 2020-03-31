@@ -19,6 +19,7 @@ object Dito  {
 
     const val DITO_NOTIFICATION_ID = "br.com.dito.ditosdk.DITO_NOTIFICATION_ID"
     const val DITO_NOTIFICATION_REFERENCE = "br.com.dito.ditosdk.DITO_NOTIFICATION_REFERENCE"
+    const val DITO_DEEP_LINK = "br.com.dito.ditosdk.DITO_DEEP_LINK"
 
     var options: Options? = null
 

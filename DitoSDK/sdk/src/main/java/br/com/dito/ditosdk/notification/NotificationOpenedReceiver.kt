@@ -39,7 +39,7 @@ class NotificationOpenedReceiver: BroadcastReceiver() {
         val packageName = context.packageName
         val intent = Dito.options?.contentIntent ?: context.packageManager?.
                 getLaunchIntentForPackage(packageName)
-        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         return intent
     }
 }

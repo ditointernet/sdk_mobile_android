@@ -10,18 +10,27 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".notificationActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="br.com.dito.samplekotlin.notificationActivity.OPEN" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <meta-data android:name="br.com.dito.API_KEY" android:value="MjAxNC0wNS0yMCAxMTowMzoyMSAtMDMwMEdyYXBoIEFwaSBWMjQ0"/>
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <meta-data android:name="br.com.dito.API_SECRET" android:value="HNVksCIUywbCIBJOv3UjgqmA7p5chPPFrpBbqvFW"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
+        <meta-data
+                android:name="br.com.dito.API_KEY"
+                android:value="MjAxNC0wNS0yMCAxMTowMzoyMSAtMDMwMEdyYXBoIEFwaSBWMjQ0" />
+        <meta-data
+                android:name="br.com.dito.API_SECRET"
+                android:value="HNVksCIUywbCIBJOv3UjgqmA7p5chPPFrpBbqvFW" />
 
         <service android:name="br.com.dito.ditosdk.notification.DitoMessagingService">
             <intent-filter>
@@ -29,8 +38,7 @@
             </intent-filter>
         </service>
 
-        <receiver android:name="br.com.dito.ditosdk.notification.NotificationOpenedReceiver"/>
-
+        <receiver android:name="br.com.dito.ditosdk.notification.NotificationOpenedReceiver" />
     </application>
 
 </manifest>

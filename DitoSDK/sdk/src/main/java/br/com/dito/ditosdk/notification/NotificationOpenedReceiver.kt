@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import br.com.dito.ditosdk.Dito
+import java.lang.Exception
 
 class NotificationOpenedReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -34,21 +35,24 @@ class NotificationOpenedReceiver: BroadcastReceiver() {
         }
 
         context?.let {
-            getIntent(it, deepLink)?.let {
-                context.startActivity(it)
+            val (defaultIntent, deepLinkIntent) = getIntent(it, deepLink)
+            try {
+                context.startActivity(deepLinkIntent)
+            } catch (e: Exception)  {
+                context.startActivity(defaultIntent)
             }
         }
     }
 
-    private fun getIntent(context: Context, deepLink: String): Intent? {
+    private fun getIntent(context: Context, deepLink: String): Pair<Intent?, Intent?> {
         val packageName = context.packageName
         var intent = Dito.options?.contentIntent ?: context.packageManager?.
             getLaunchIntentForPackage(packageName)
+        var deepLinkIntent: Intent? = null
         if (deepLink != "") {
-            intent = Intent(deepLink)
-            intent.putExtra(Dito.DITO_DEEP_LINK, deepLink)
+            deepLinkIntent = Intent(deepLink)
         }
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-        return intent
+        return Pair(intent, deepLinkIntent)
     }
 }

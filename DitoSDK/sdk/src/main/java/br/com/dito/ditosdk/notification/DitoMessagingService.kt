@@ -49,7 +49,7 @@ class DitoMessagingService: FirebaseMessagingService() {
             deepLink = objData.getJSONObject("details").get("link") as String
         } catch (e: Exception) {}
 
-        if (reference != "" && notificationId != "") {
+        if (notificationId != "") {
             sendNotification(null, message, notificationId, reference, deepLink)
         }
     }

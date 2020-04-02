@@ -8,9 +8,9 @@ import java.lang.Exception
 
 class NotificationOpenedReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        var notificationId: String = ""
-        var reference: String = ""
-        var deepLink: String = ""
+        var notificationId: String? = intent?.getStringExtra(Dito.DITO_NOTIFICATION_ID)
+        var reference: String? = intent?.getStringExtra(Dito.DITO_NOTIFICATION_REFERENCE)
+        var deepLink: String? = intent?.getStringExtra(Dito.DITO_DEEP_LINK)
 
         context?.let {
             if (!Dito.isInitialized()) {
@@ -18,19 +18,7 @@ class NotificationOpenedReceiver: BroadcastReceiver() {
             }
         }
 
-        intent?.getStringExtra(Dito.DITO_NOTIFICATION_ID)?.let {
-            notificationId = it
-        }
-
-        intent?.getStringExtra(Dito.DITO_NOTIFICATION_REFERENCE)?.let {
-            reference = it
-        }
-
-        intent?.getStringExtra(Dito.DITO_DEEP_LINK)?.let {
-            deepLink = it
-        }
-
-        if (reference != "" && notificationId != "") {
+        if (reference != null && notificationId != null) {
             Dito.notificationRead(notificationId, reference)
         }
 
@@ -44,12 +32,12 @@ class NotificationOpenedReceiver: BroadcastReceiver() {
         }
     }
 
-    private fun getIntent(context: Context, deepLink: String): Pair<Intent?, Intent?> {
+    private fun getIntent(context: Context, deepLink: String?): Pair<Intent?, Intent?> {
         val packageName = context.packageName
         var intent = Dito.options?.contentIntent ?: context.packageManager?.
             getLaunchIntentForPackage(packageName)
         var deepLinkIntent: Intent? = null
-        if (deepLink != "") {
+        if (deepLink != null) {
             deepLinkIntent = Intent(deepLink)
         }
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)

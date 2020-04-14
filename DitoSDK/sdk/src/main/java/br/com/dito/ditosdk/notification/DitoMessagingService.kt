@@ -79,7 +79,7 @@ class DitoMessagingService: FirebaseMessagingService() {
         intent.putExtra(Dito.DITO_NOTIFICATION_REFERENCE, reference)
         intent.putExtra(Dito.DITO_DEEP_LINK, deepLink)
 
-        val pendingIntent = PendingIntent.getBroadcast(this, 7, intent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(this, 7, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val smallIcon = Dito.options?.iconNotification ?: applicationInfo.icon
 

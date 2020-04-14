@@ -23,24 +23,21 @@ class NotificationOpenedReceiver: BroadcastReceiver() {
         }
 
         context?.let {
-            val (defaultIntent, deepLinkIntent) = getIntent(it, deepLink)
+            val intent = getIntent(it, deepLink)
             try {
-                context.startActivity(deepLinkIntent)
-            } catch (e: Exception)  {
-                context.startActivity(defaultIntent)
-            }
+                context.startActivity(intent)
+            } catch (e: Exception)  {}
         }
     }
 
-    private fun getIntent(context: Context, deepLink: String?): Pair<Intent?, Intent?> {
+    private fun getIntent(context: Context, deepLink: String?): Intent? {
         val packageName = context.packageName
-        var intent = Dito.options?.contentIntent ?: context.packageManager?.
+        val intent = Dito.options?.contentIntent ?: context.packageManager?.
             getLaunchIntentForPackage(packageName)
-        var deepLinkIntent: Intent? = null
-        if (deepLink != null) {
-            deepLinkIntent = Intent(deepLink)
+        intent?.apply {
+            putExtra(Dito.DITO_DEEP_LINK, deepLink)
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-        return Pair(intent, deepLinkIntent)
+        return intent
     }
 }

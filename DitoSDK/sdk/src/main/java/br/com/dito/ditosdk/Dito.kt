@@ -17,7 +17,9 @@ object Dito  {
     private lateinit var apiSecret: String
     private lateinit var tracker: Tracker
 
-   const val  DITO_NOTIFICATION_ID = "br.com.dito.ditosdk.DITO_NOTIFICATION_ID"
+    const val DITO_NOTIFICATION_ID = "br.com.dito.ditosdk.DITO_NOTIFICATION_ID"
+    const val DITO_NOTIFICATION_REFERENCE = "br.com.dito.ditosdk.DITO_NOTIFICATION_REFERENCE"
+    const val DITO_DEEP_LINK = "br.com.dito.ditosdk.DITO_DEEP_LINK"
 
     var options: Options? = null
 
@@ -78,8 +80,8 @@ object Dito  {
     /**
      * @param notification
      */
-    fun notificationRead(@NotNull notification: String) {
-        tracker.notificationRead(notification, RemoteService.notificationApi())
+    fun notificationRead(@NotNull notification: String, @Nullable reference: String) {
+        tracker.notificationRead(notification, RemoteService.notificationApi(), reference)
     }
 
     internal fun isInitialized(): Boolean {

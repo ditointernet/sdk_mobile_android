@@ -12,18 +12,50 @@ import br.com.dito.ditosdk.Dito
 import br.com.dito.ditosdk.R
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import org.json.JSONObject
 
 
 class DitoMessagingService: FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         super.onMessageReceived(remoteMessage)
+        var notificationId: String? = null
+        var reference: String? = null
+        var deepLink: String? = null
+        var message: String? = null
+        val data = remoteMessage?.getData()?.getValue("data")
+        val objData = JSONObject(data)
 
-        val notificationId = remoteMessage?.data?.get("notification")
+        try{
+            objData.get("notification")?.let {
+                if (it is String){
+                    notificationId = it
+                } else if (it is Integer) {
+                    notificationId = it.toString()
+                }
+            }
+        } catch (e: Exception) {}
 
-        remoteMessage?.notification?.let {
-            sendNotification(it.title, it.body, notificationId)
+        try{
+            objData.get("reference")?.let {
+                if (it is String) {
+                    reference = it
+                }
+            }
+        } catch (e: Exception) {}
+
+        try {
+            message = objData.getJSONObject("details").get("message") as String
+        } catch (e: Exception) {}
+
+        try {
+            deepLink = objData.getJSONObject("details").get("link") as String
+        } catch (e: Exception) {}
+
+        message?.let {
+            sendNotification(null, message, notificationId, reference, deepLink)
         }
+
     }
 
     override fun onNewToken(token: String?) {
@@ -36,14 +68,18 @@ class DitoMessagingService: FirebaseMessagingService() {
         }
     }
 
-    private fun sendNotification(title: String?, message: String?, notificationId: String?) {
-
+    private fun sendNotification(title: String?,
+                                 message: String,
+                                 notificationId: String?,
+                                 reference: String?,
+                                 deepLink: String?) {
         val intent = Intent(this, NotificationOpenedReceiver::class.java)
-        notificationId?.let {
-            intent.putExtra(Dito.DITO_NOTIFICATION_ID, it)
-        }
 
-        val pendingIntent = PendingIntent.getBroadcast(this, 7, intent, 0)
+        intent.putExtra(Dito.DITO_NOTIFICATION_ID, notificationId)
+        intent.putExtra(Dito.DITO_NOTIFICATION_REFERENCE, reference)
+        intent.putExtra(Dito.DITO_DEEP_LINK, deepLink)
+
+        val pendingIntent = PendingIntent.getBroadcast(this, 7, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val smallIcon = Dito.options?.iconNotification ?: applicationInfo.icon
 

@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
+import android.util.Log
 
 internal class TrackerRetry(private var tracker: Tracker, private var trackerOffline: TrackerOffline, private var retry: Int = 5) {
 

@@ -109,21 +109,23 @@ internal class Tracker(private var apiKey: String, apiSecret: String, private va
 
     fun notificationRead(@NonNull notificationId: String, @NonNull api: NotificationApi, notificationReference: String) {
         GlobalScope.launch(Dispatchers.IO) {
-            val data = JsonObject()
-            data.addProperty("identifier", notificationReference.substring(5))
-            data.addProperty("reference", notificationReference)
+            if (notificationReference != null && notificationReference != "" && notificationId != "") {
+                val data = JsonObject()
+                data.addProperty("identifier", notificationReference.substring(5))
+                data.addProperty("reference", notificationReference)
 
-            val params = NotificationOpenRequest(apiKey, apiSecret, data.toString())
+                val params = NotificationOpenRequest(apiKey, apiSecret, data.toString())
 
-            try {
-                val response = api.open(notificationId, params).await()
+                try {
+                    val response = api.open(notificationId, params).await()
 
-                if (!response.isSuccessful) {
+                    if (!response.isSuccessful) {
+                        trackerOffline.notificationRead(params)
+                    }
+
+                } catch (e: Exception) {
                     trackerOffline.notificationRead(params)
                 }
-
-            } catch (e: Exception) {
-                trackerOffline.notificationRead(params)
             }
         }
     }

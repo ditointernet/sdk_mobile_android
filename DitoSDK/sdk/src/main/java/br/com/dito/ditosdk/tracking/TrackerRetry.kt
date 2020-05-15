@@ -44,11 +44,17 @@ internal class TrackerRetry(private var tracker: Tracker, private var trackerOff
         GlobalScope.launch(Dispatchers.IO) {
             val events = trackerOffline.getAllEvents()
             events?.forEach {
-                if (it.retry == retry) {
-                    trackerOffline.delete(it.id, "Event")
-                }
-                else {
-                    sendEvent(it, tracker.id)
+                try {
+                    if (it.retry == retry) {
+                        trackerOffline.delete(it.id, "Event")
+                    }
+                    else {
+                        sendEvent(it, tracker.id)
+                    }
+                } catch (e: Exception) {
+                    if (e is UninitializedPropertyAccessException) {
+                        Log.e("Tracker", "Antes de enviar um evento é preciso identificar o usuário.")
+                    }
                 }
             }
         }
@@ -73,11 +79,17 @@ internal class TrackerRetry(private var tracker: Tracker, private var trackerOff
         GlobalScope.launch(Dispatchers.IO) {
             val notifications = trackerOffline.getAllNotificationRead()
             notifications?.forEach {
-                if (it.retry == retry) {
-                    trackerOffline.delete(it.id, "NotificationRead")
-                }
-                else {
-                    sendNotificationRead(it, tracker.id)
+                try {
+                    if (it.retry == retry) {
+                        trackerOffline.delete(it.id, "NotificationRead")
+                    }
+                    else {
+                        sendNotificationRead(it, tracker.id)
+                    }
+                } catch (e: Exception) {
+                    if (e is UninitializedPropertyAccessException) {
+                        Log.e("Tracker", "Antes de enviar um evento é preciso identificar o usuário.")
+                    }
                 }
             }
         }

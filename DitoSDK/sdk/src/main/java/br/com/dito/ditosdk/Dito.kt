@@ -52,8 +52,8 @@ object Dito  {
     /**
      * @param identify
      */
-    fun identify (@NonNull identify: Identify) {
-        tracker.identify(identify, RemoteService.loginApi())
+    fun identify (@NonNull identify: Identify, callback: (() -> Unit)?) {
+        tracker.identify(identify, RemoteService.loginApi(), callback)
     }
 
     /**

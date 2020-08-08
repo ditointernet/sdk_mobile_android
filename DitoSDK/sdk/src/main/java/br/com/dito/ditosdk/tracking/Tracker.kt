@@ -36,21 +36,21 @@ internal class Tracker(private var apiKey: String, apiSecret: String, private va
         }
     }
 
-    fun identify(@NonNull identify: Identify, @NonNull api: LoginApi) {
+    fun identify(@NonNull identify: Identify, @NonNull api: LoginApi, callback: (() -> Unit)?) {
         GlobalScope.launch(Dispatchers.IO) {
+            Log.d("begin-identify", "begin identify user")
             id = identify.id
             val params = SigunpRequest(apiKey, apiSecret, identify)
             try {
                 val response = api.signup("portal", identify.id, params).await()
-
                 if (!response.isSuccessful) {
                     trackerOffline.identify(params, null, false)
                 } else {
                     reference = response.body()!!
                             .getAsJsonObject("data").get("reference").asString
                     trackerOffline.identify(params, reference, true)
+                    callback?.invoke()
                 }
-
             } catch (e: Exception) {
                 trackerOffline.identify(params, null, false)
             }

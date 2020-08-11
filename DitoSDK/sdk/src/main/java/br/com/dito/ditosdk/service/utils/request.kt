@@ -2,6 +2,7 @@ package br.com.dito.ditosdk.service.utils
 
 import br.com.dito.ditosdk.Event
 import br.com.dito.ditosdk.Identify
+import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 
 internal data class SigunpRequest(
@@ -67,8 +68,11 @@ internal data class NotificationOpenRequest(
         val sha1Signature: String,
 
         @SerializedName("data")
-        val data: String,
+        val data: JsonObject,
 
         @SerializedName("encoding")
-        val encoding: String = "base64"
+        val encoding: String = "base64",
+
+        @SerializedName("channel_type")
+        val channelType: String = "mobile"
 )

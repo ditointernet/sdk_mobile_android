@@ -114,7 +114,7 @@ internal class Tracker(private var apiKey: String, apiSecret: String, private va
                 data.addProperty("identifier", notificationReference.substring(5))
                 data.addProperty("reference", notificationReference)
 
-                val params = NotificationOpenRequest(apiKey, apiSecret, data.toString())
+                val params = NotificationOpenRequest(apiKey, apiSecret, data)
 
                 try {
                     val response = api.open(notificationId, params).await()

@@ -29,12 +29,16 @@ internal class TrackerRetry(private var tracker: Tracker, private var trackerOff
                 if (!it.send) {
                     val value = gson.fromJson(it.json, JsonObject::class.java)
                     val api = RemoteService.loginApi()
-                    val response = api.signup("portal", identifyOff.id, value).await()
-                    if (response.isSuccessful) {
-                        val reference = response.body()?.getAsJsonObject("data")?.get("reference")?.asString
-                        reference?.let {
-                            trackerOffline.updateIdentify(identifyOff.id, it, true)
+                    try {
+                        val response = api.signup("portal", identifyOff.id, value).await()
+                        if (response.isSuccessful) {
+                            val reference = response.body()?.getAsJsonObject("data")?.get("reference")?.asString
+                            reference?.let {
+                                trackerOffline.updateIdentify(identifyOff.id, it, true)
+                            }
                         }
+                    } catch (e: Exception) {
+                        Log.d("tracker", "tracker retry: error checking identify")
                     }
                 }
             }

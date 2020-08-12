@@ -2,6 +2,7 @@ package br.com.dito.samplekotlin
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import br.com.dito.ditosdk.*
 import com.google.firebase.iid.FirebaseInstanceId
@@ -23,7 +24,15 @@ class MainActivity : AppCompatActivity() {
         val identify = Identify("85496430259")
         identify.data = data
 
-        Dito.identify(identify)
+        Dito.identify(identify, { registerToken() })
+    }
+
+    fun registerToken() {
+        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
+            token = it?.token
+            Dito.registerDevice(token!!)
+            Log.d("identify", "success on registering token")
+        }
     }
 
     fun onClickEvent(view: View) {

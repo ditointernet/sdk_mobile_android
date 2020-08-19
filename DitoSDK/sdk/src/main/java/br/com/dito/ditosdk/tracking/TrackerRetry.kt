@@ -6,7 +6,6 @@ import br.com.dito.ditosdk.service.RemoteService
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import android.util.Log
 

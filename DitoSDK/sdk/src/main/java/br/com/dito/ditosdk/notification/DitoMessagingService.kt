@@ -26,10 +26,11 @@ class DitoMessagingService: FirebaseMessagingService() {
         var deepLink: String? = null
         var message: String = ""
         var objData: JSONObject?
-        val data = remoteMessage?.getData()?.getValue("data")
-        if (data == null) {
-            Log.d("missing-fields-not", "The received notification " +
-                    "msg does not have some required fields, so it's impossible to create it")
+        var data: String? = null
+        try {
+            data = remoteMessage?.getData()?.getValue("data")
+        } catch (e: Exception) {
+            Log.d("missing-fields-notif", "Missing data from notification")
             return
         }
         try{
@@ -39,18 +40,26 @@ class DitoMessagingService: FirebaseMessagingService() {
             return
         }
 
-        objData.get("notification")?.let {
-            if (it is String){
-                notificationId = it
-            } else if (it is Integer) {
-                notificationId = it.toString()
+        try {
+            objData.get("notification")?.let {
+                if (it is String) {
+                    notificationId = it
+                } else if (it is Integer) {
+                    notificationId = it.toString()
+                }
             }
+        } catch (e: JSONException){
+            Log.d("missing-fields-notif", "Missing notification identifier")
         }
 
-        objData.get("reference")?.let {
-            if (it is String) {
-                reference = it
+        try {
+            objData.get("reference")?.let {
+                if (it is String) {
+                    reference = it
+                }
             }
+        } catch (e: JSONException){
+            Log.d("missing-fields-notif", "Missing notification reference")
         }
 
         try {

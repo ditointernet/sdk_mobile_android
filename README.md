@@ -21,6 +21,7 @@ dependencies {
   implementation 'com.github.ditointernet:sdk_mobile_android:<LAST_VERSION>'
 }
 ```
+Para aplicativos com target Android 12 ou maior (API 31 +) usar o rc08
 
 ## Configuração
 

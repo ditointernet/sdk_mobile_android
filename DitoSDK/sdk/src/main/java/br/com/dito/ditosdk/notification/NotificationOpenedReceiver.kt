@@ -36,7 +36,8 @@ class NotificationOpenedReceiver: BroadcastReceiver() {
             getLaunchIntentForPackage(packageName)
         intent?.apply {
             putExtra(Dito.DITO_DEEP_LINK, deepLink)
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            if(Dito.getHibridMode() != "ON")
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         return intent
     }

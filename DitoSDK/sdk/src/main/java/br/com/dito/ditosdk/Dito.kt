@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull
 object Dito  {
 
     private lateinit var apiKey: String
+    private lateinit var hibridMode: String
     private lateinit var apiSecret: String
     private lateinit var tracker: Tracker
 
@@ -36,6 +37,7 @@ object Dito  {
         appInfo.metaData?.let {
             apiKey = it.getString("br.com.dito.API_KEY", "")
             apiSecret = it.getString("br.com.dito.API_SECRET", "")
+            hibridMode = it.getString("br.com.dito.HIBRID_MODE", "OFF")
 
             if (apiKey.isEmpty() || apiSecret.isEmpty()) {
                 throw RuntimeException("É preciso configurar API_KEY e API_SECRET no AndroidManifest.")
@@ -87,4 +89,8 @@ object Dito  {
     internal fun isInitialized(): Boolean {
         return apiKey.isNotEmpty() && apiSecret.isNotEmpty()
     }
+    fun getHibridMode(): String{
+        return hibridMode;
+    }
+
 }

@@ -12,7 +12,7 @@ class NotificationOpenedReceiver: BroadcastReceiver() {
         var notificationId: String? = intent?.getStringExtra(Dito.DITO_NOTIFICATION_ID)
         var reference: String? = intent?.getStringExtra(Dito.DITO_NOTIFICATION_REFERENCE)
         var deepLink: String? = intent?.getStringExtra(Dito.DITO_DEEP_LINK)
-        
+
         context?.let {
             if (!Dito.isInitialized()) {
                 Dito.init(it.applicationContext, null)
@@ -35,12 +35,16 @@ class NotificationOpenedReceiver: BroadcastReceiver() {
         val packageName = context.packageName
         val intent = Dito.options?.contentIntent ?: context.packageManager?.
             getLaunchIntentForPackage(packageName)
+
+        if (intent != null) {
+            Log.d("debug-lamoda", intent.toString())
+        }
         intent?.apply {
-            Log.d("debug-lamoda", packageName)
             putExtra(Dito.DITO_DEEP_LINK, deepLink)
-            if(Dito.getHibridMode() != "ON") {
+            if(Dito.getHibridMode() != "ON")
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
+            else
+                addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
         }
         return intent
     }

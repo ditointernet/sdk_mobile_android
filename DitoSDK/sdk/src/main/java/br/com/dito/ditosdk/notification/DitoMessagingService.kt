@@ -24,6 +24,7 @@ class DitoMessagingService: FirebaseMessagingService() {
         var notificationId: String? = null
         var reference: String? = null
         var deepLink: String? = null
+        var title: String = ""
         var message: String = ""
         var objData: JSONObject?
         var data: String? = null
@@ -63,6 +64,12 @@ class DitoMessagingService: FirebaseMessagingService() {
         }
 
         try {
+            title = objData.getJSONObject("details").get("title") as String
+        } catch (e: Exception) {
+            Log.d("empty-title-details", "There is no title in notification")
+        }
+
+        try {
             message = objData.getJSONObject("details").get("message") as String
         } catch (e: Exception) {
             Log.d("empty-message-details", "There is no message in notification")
@@ -74,7 +81,7 @@ class DitoMessagingService: FirebaseMessagingService() {
             Log.d("empty-deeplink-details", "There is no deeplink in notification")
         }
 
-        sendNotification(null, message, notificationId, reference, deepLink)
+        sendNotification(title, message, notificationId, reference, deepLink)
     }
 
     override fun onNewToken(token: String?) {
@@ -110,6 +117,10 @@ class DitoMessagingService: FirebaseMessagingService() {
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+
+        if (!title.isNullOrEmpty()) {
+            notificationBuilder.setContentTitle(title)
+        }
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 

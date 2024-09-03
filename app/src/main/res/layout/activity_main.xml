@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp"
+        android:padding="32dp">
+
+        <Button
+            android:id="@+id/bt_identify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClickIdentify"
+            android:text="@string/identify" />
+
+        <Button
+            android:id="@+id/bt_event"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClickEvent"
+            android:text="@string/enviar_evento" />
+
+        <Button
+            android:id="@+id/bt_resiter_token"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClickRegisterToken"
+            android:text="@string/registrar_token" />
+
+        <Button
+            android:id="@+id/bt_delete_token"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClickDeleteToken"
+            android:text="@string/deletar_token" />
+
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

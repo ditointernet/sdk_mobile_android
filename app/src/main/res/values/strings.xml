@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SampleKotlin</string>
+    <string name="identify">Identificar Usuário</string>
+    <string name="enviar_evento">Enviar Evento</string>
+    <string name="registrar_token">Registrar Token</string>
+    <string name="deletar_token">Deletar Token</string>
+</resources>

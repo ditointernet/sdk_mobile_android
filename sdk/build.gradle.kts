@@ -2,6 +2,17 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.devtools.ksp")
+    id("maven-publish")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.github.ditointernet"
+            artifactId = "library"
+            version = "2.1.1"
+        }
+    }
 }
 
 group = "com.github.ditointernet"
@@ -36,11 +47,9 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.room.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -61,6 +70,7 @@ dependencies {
     implementation(libs.firebase.messaging)
 
     // SQL
+    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.common)
     ksp(libs.androidx.room.compiler)
 }

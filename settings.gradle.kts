@@ -21,6 +21,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Android SDK"
-include(":app")
 include(":sdk")
 

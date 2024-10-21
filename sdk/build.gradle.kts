@@ -5,16 +5,6 @@ plugins {
     id("maven-publish")
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "com.github.ditointernet"
-            artifactId = "library"
-            version = "2.1.1"
-        }
-    }
-}
-
 group = "com.github.ditointernet"
 
 android {
@@ -43,6 +33,13 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
     }
 }
 
@@ -73,4 +70,17 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.common)
     ksp(libs.androidx.room.compiler)
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.github.ditointernet"
+                artifactId = "sdk_mobile_android"
+                version = "2.1.1"
+            }
+        }
+    }
 }

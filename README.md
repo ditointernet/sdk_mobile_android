@@ -1,4 +1,5 @@
-# Dito Android SDK
+# Dito Android SDK  - Deprecado
+Módulo atual - [https://github.com/ditointernet/sdk-mobile](https://github.com/ditointernet/sdk-mobile)
 
 ## Dependência
 
